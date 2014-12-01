@@ -81,6 +81,9 @@
     <ClInclude Include="Terrain.h">
       <Filter>Header Files\Objects\Primitives</Filter>
     </ClInclude>
+    <ClInclude Include="SnowObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -121,6 +124,9 @@
     </ClCompile>
     <ClCompile Include="Terrain.cpp">
       <Filter>Source Files\Objects\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="SnowObject.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

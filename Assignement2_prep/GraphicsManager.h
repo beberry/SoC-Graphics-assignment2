@@ -21,6 +21,7 @@ reacts to callbacks.
 #include "Sphere.h"
 #include "Windmill.h"
 #include "Terrain.h"
+#include "SnowObject.h"
 
 /* Other */
 #include <stack>

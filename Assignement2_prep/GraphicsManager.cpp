@@ -8,7 +8,7 @@ reacts to callbacks.
 
 #include "GraphicsManager.h"
 
-GLuint program;
+GLuint program, snowShader;
 GLuint vao;
 
 /* Configuration properties */
@@ -24,6 +24,7 @@ GLuint modelID, viewID, projectionID, normalMatrixID, lightPosID, emitmodeID, te
 Sphere *lightSourceModel;
 Windmill *windmill;
 Terrain *terrain;
+SnowObject *snowModel;
 
 /* Other configuration */
 GLfloat light_x, light_y, light_z, vx, vy, vz, wingAngle, wingAngle_inc, head_angle, zoom, aspect_ratio;
@@ -46,7 +47,7 @@ GraphicsManager::GraphicsManager()
 	fogmode = 0;
 
 
-	Glfw_wrap *glfw = new Glfw_wrap(window_w, window_h, "Assignment 1, JS");
+	Glfw_wrap *glfw = new Glfw_wrap(window_w, window_h, "Assignment 2, JS");
 
 	if (!ogl_LoadFunctions())
 	{
@@ -108,12 +109,29 @@ void GraphicsManager::init(Glfw_wrap *glfw)
 	lightSourceModel = new Sphere(0.5, 0.5, false, textureID);
 	lightSourceModel->makeVBO(20.0f, 30.0f);
 
+	/* Create shader manager and load the shader programs. */
+
+	ShaderManager *shaderManager = new ShaderManager();
+	/* Create Snow model */
+	try
+	{
+		snowShader = shaderManager->LoadShader("shaders/particle_object.vert", "shaders/particle_object.frag");
+	}
+	catch (std::exception &e)
+	{
+		std::cout << "Caught exception: " << e.what() << std::endl;
+		std::cin.ignore();
+		exit(0);
+	}
+
 	/* Create the terrain object. */
 	terrain = new Terrain();
 	terrain->create();
 
-	/* Create shader manager and load the shader programs. */
-	ShaderManager *shaderManager = new ShaderManager();
+
+
+	snowModel = new SnowObject();
+	snowModel->create(snowShader, terrain->noiseValues, terrain->vertexCountZ);
 
 	try
 	{
@@ -165,6 +183,7 @@ void display()
 
 	/* Enable depth test. */
 	glEnable(GL_DEPTH_TEST);
+
 
 	/* Use the our loaded shader program. */
 	glUseProgram(program);
@@ -261,6 +280,9 @@ void display()
 
 	glDisableVertexAttribArray(0);
 	glUseProgram(0);
+
+	/* Draw snow */
+	snowModel->drawParticles(Projection, View);
 }
 
 /* Window resize callback. */

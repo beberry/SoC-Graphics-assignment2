@@ -18,6 +18,7 @@ Glfw_wrap::Glfw_wrap(int width, int height, char *title) {
 	this->windowHeight = height;
 	this->title		   = title;
 	this->fps		   = 60;
+	this->lastRender   = 0;
 	this->running	   = true;
 
 	/* Initialise GLFW and exit if it fails */
@@ -86,12 +87,19 @@ int Glfw_wrap::eventLoop()
 	// Main loop
 	while (!glfwWindowShouldClose(window))
 	{
-		// Call function to draw your graphics
-		renderer();
+		// Be sure to have the proper framerate.
 
-		// Swap buffers
-		glfwSwapBuffers(window);
-		glfwPollEvents();
+		double currentTime = glfwGetTime();
+
+		if (currentTime - this->lastRender >= 1.0 / this->fps)
+		{
+			// Call function to draw your graphics
+			renderer();
+
+			// Swap buffers
+			glfwSwapBuffers(window);
+			glfwPollEvents();
+		}
 	}
 
 	glfwTerminate();

@@ -89,6 +89,7 @@
     <ClInclude Include="shaderManager.h" />
     <ClInclude Include="Cylinder.h" />
     <ClInclude Include="SkyBox.h" />
+    <ClInclude Include="SnowObject.h" />
     <ClInclude Include="SOIL.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Terrain.h" />
@@ -105,6 +106,7 @@
     <ClCompile Include="shaderManager.cpp" />
     <ClCompile Include="Cylinder.cpp" />
     <ClCompile Include="SkyBox.cpp" />
+    <ClCompile Include="SnowObject.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="TextureManager.cpp" />

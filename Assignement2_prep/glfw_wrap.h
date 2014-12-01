@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 #include "glfw_wrap.h"
 
+
 /* Inlcude some standard headers */
 #include <iostream>
 
@@ -20,6 +21,7 @@ private:
 	char *title;
 
 	double fps;
+	double lastRender;
 
 	void(*errorCallback)(int error, const char* description);
 	void(*renderer)();

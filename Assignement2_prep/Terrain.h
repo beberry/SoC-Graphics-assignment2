@@ -28,7 +28,6 @@ private:
 	std::vector<GLuint> indices;
 	std::vector<glm::vec3> vertexNormals;
 
-	GLfloat* noiseValues;
 
 	/* Should rename this one */
 	GLfloat height_scale;
@@ -38,7 +37,6 @@ private:
 
 	int drawmode;
 	GLuint vertexCountX;
-	GLuint vertexCountZ;
 	GLuint perlin_octaves;
 
 	GLuint bufferObject, normalsBufferObject, indiceBufferObject;
@@ -46,6 +44,9 @@ private:
 public:
 	Terrain();
 	~Terrain();
+
+	GLfloat* noiseValues;
+	GLuint vertexCountZ;
 
 	void Terrain::draw();
 	void Terrain::create();

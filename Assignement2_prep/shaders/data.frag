@@ -123,4 +123,6 @@ void main()
 		// Apply exponential Fog from the super bible
 		outputColor = fog(outputColor);
 	}
+
+	outputColor = vec4(0.3,0.3,0.0,1.0);
 }

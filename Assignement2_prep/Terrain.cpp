@@ -3,8 +3,8 @@
 
 Terrain::Terrain()
 {
-	this->vertexCountX = 100;
-	this->vertexCountZ = 100;
+	this->vertexCountX = 3;
+	this->vertexCountZ = 3;
 	this->perlin_octaves = 4;
 	this->height_scale = 1.f;
 	this->height = 20.0;
@@ -26,13 +26,13 @@ void Terrain::create()
 	this->vertexNormals.resize(vertexCount);
 
 	/* First calculate the noise array which we'll use for our vertex height values */
-	calculateNoise(1.4f, 2.f);
+	calculateNoise(10.4f, 1.3f);
 
 	/* Debug code to check that noise values are sensible */
-	for (int i = 0; i < (this->vertexCountX*this->vertexCountZ*perlin_octaves); i++)
-		{
-			printf("\n noise[%d] = %f", i, this->noiseValues[i]);
-		}
+	/*for (int i = 0; i < (this->vertexCountX*this->vertexCountZ*perlin_octaves); i++)
+	{
+		printf("\n noise[%d] = %f", i, this->noiseValues[i]);
+	}*/
 
 	/* Define starting (x,z) positions and the step changes */
 	GLfloat xpos = -width / 2.f;
