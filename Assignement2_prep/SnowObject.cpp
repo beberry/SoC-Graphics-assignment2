@@ -146,7 +146,7 @@ void SnowObject::drawParticles(glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix)
 		ParticlesContainer[particleIndex].b = rand() % 256;
 		ParticlesContainer[particleIndex].a = (rand() % 256) / 3;
 
-		ParticlesContainer[particleIndex].size = (rand() % 1000) / 2000.0f + 0.1f;
+		ParticlesContainer[particleIndex].size = glm::linearRand(0.5f, 0.51f);
 	}
 
 	// Simulate all particles

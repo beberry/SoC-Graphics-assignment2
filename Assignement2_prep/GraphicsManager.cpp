@@ -112,6 +112,8 @@ void GraphicsManager::init(Glfw_wrap *glfw)
 	/* Create shader manager and load the shader programs. */
 
 	ShaderManager *shaderManager = new ShaderManager();
+
+
 	/* Create Snow model */
 	try
 	{
@@ -126,6 +128,7 @@ void GraphicsManager::init(Glfw_wrap *glfw)
 
 	/* Create the terrain object. */
 	terrain = new Terrain();
+	terrain->setTexture("water.jpg");
 	terrain->create();
 
 
@@ -249,13 +252,16 @@ void display()
 	modelScale.pop();
 	/* END Windmill */
 	glUniform1ui(specularModeID, 1);
-	glUniform1ui(textureModeID, 0);
+	glUniform1ui(textureModeID, 1);
 	glUniform1ui(emitmodeID, 0);
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glDisable(GL_TEXTURE_2D);
+	//glBindTexture(GL_TEXTURE_2D, 0);
+	//glDisable(GL_TEXTURE_2D);
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(2);
+
 	terrain->draw();
+
+	glUniform1ui(textureModeID, 0);
 
 
 	/* START LIGHT Sphere */

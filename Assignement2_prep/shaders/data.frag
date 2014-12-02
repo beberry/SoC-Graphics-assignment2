@@ -74,7 +74,7 @@ vec4 texturing()
 		tmp3.x = tmp2.x;
 	}
 
-	vec4 texcolour = texture(tex1, tmp3);
+	vec4 texcolour = texture(tex1, vs_texture.texcoord);
 	
 	return texcolour;
 }
@@ -124,5 +124,5 @@ void main()
 		outputColor = fog(outputColor);
 	}
 
-	outputColor = vec4(0.3,0.3,0.0,1.0);
+	//outputColor = vec4(0.3,0.3,0.0,1.0);
 }

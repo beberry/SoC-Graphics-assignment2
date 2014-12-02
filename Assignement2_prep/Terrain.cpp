@@ -3,8 +3,8 @@
 
 Terrain::Terrain()
 {
-	this->vertexCountX = 3;
-	this->vertexCountZ = 3;
+	this->vertexCountX = 20;
+	this->vertexCountZ = 20;
 	this->perlin_octaves = 4;
 	this->height_scale = 1.f;
 	this->height = 20.0;
@@ -26,7 +26,7 @@ void Terrain::create()
 	this->vertexNormals.resize(vertexCount);
 
 	/* First calculate the noise array which we'll use for our vertex height values */
-	calculateNoise(10.4f, 1.3f);
+	calculateNoise(1.0f, 1.7f);
 
 	/* Debug code to check that noise values are sensible */
 	/*for (int i = 0; i < (this->vertexCountX*this->vertexCountZ*perlin_octaves); i++)
@@ -141,6 +141,47 @@ void Terrain::createVBO()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->indiceBufferObject);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->indices.size() * sizeof(GLuint), this->indices.data(), GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	GLfloat sizeH = (this->vertexCountX - 1)*1.0;
+	GLfloat sizeW = (this->vertexCountZ - 1)*1.0;
+
+	/* Generate texture coordinats */
+	std::vector<GLfloat> texcoords1;
+
+	GLfloat latstep = 1.0 / this->vertexCountX;
+	GLfloat longstep = 1.0 / this->vertexCountZ;
+
+	for (int i = 0; i < this->vertexCountX; i++)
+	{
+		for (int x = 0; x < this->vertexCountZ; x++)
+		{
+			if (i % 2 == 0)
+			{
+				texcoords1.push_back(0.0f);
+			}
+			else
+			{
+				texcoords1.push_back(1.0f);
+			}
+
+			if (x % 2 == 0)
+			{
+				texcoords1.push_back(0.0f);
+			}
+			else
+			{
+				texcoords1.push_back(1.0f);
+			}
+		}
+	}
+
+
+	/* Generate the texture coordinate buffer */
+	glGenBuffers(1, &this->textureBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, this->textureBuffer);
+	glBufferData(GL_ARRAY_BUFFER, texcoords1.size()*sizeof(GLfloat), texcoords1.data(), GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 }
 
 /* A method which draws the terrain object using the previously defined vertex buffer. */
@@ -169,6 +210,11 @@ void Terrain::draw()
 		0                   // offset of first element
 		);
 
+	/* BInd the texture data */
+	glEnableVertexAttribArray(3);
+	glBindBuffer(GL_ARRAY_BUFFER, this->textureBuffer);
+	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->indiceBufferObject);
 	//glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
 	
@@ -180,6 +226,8 @@ void Terrain::draw()
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	else
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	glBindTexture(GL_TEXTURE_2D, this->texID);
 
 	/* Draw the triangle strips */
 	for (int i = 0; i < this->vertexCountX - 1; i++)
@@ -237,4 +285,38 @@ void Terrain::calculateNoise(GLfloat freq, GLfloat scale)
 void Terrain::setDrawmode(int drawmode)
 {
 	this->drawmode = drawmode;
+}
+
+/* Set the texture for this object. Originally written by Ian Martin, modified by Jekabs Stikans. */
+void Terrain::setTexture(std::string textureName)
+{
+	try
+	{
+		/* Not actually needed if using one texture at a time */
+		glActiveTexture(GL_TEXTURE0);
+
+		std::string fileLoc = "textures/" + textureName;
+
+		/* load an image file directly as a new OpenGL texture */
+		this->texID = SOIL_load_OGL_texture(fileLoc.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID,
+			SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+
+		/* check for an error during the load process */
+		if (this->texID == 0)
+		{
+			printf("TexID SOIL loading error: '%s'\n", SOIL_last_result());
+		}
+	}
+	catch (std::exception &e)
+	{
+		printf("\nImage file loading failed.");
+	}
+
+	/* Define the texture behaviour parameters */
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }

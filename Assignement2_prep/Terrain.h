@@ -17,6 +17,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/noise.hpp>
 
+#include "TextureManager.h"
+
 #include <vector>
 #include <iostream>
 
@@ -39,7 +41,7 @@ private:
 	GLuint vertexCountX;
 	GLuint perlin_octaves;
 
-	GLuint bufferObject, normalsBufferObject, indiceBufferObject;
+	GLuint bufferObject, normalsBufferObject, indiceBufferObject, textureBuffer, texID;
 
 public:
 	Terrain();
@@ -55,5 +57,6 @@ public:
 	void Terrain::calcNormals();
 	void Terrain::calculateNoise(GLfloat freq, GLfloat scale);
 	void Terrain::setDrawmode(int drawMode);
+	void Terrain::setTexture(std::string textureName);
 };
 
