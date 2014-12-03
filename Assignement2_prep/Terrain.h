@@ -32,13 +32,10 @@ private:
 
 
 	/* Should rename this one */
-	GLfloat height_scale;
-	GLfloat width;
-	GLfloat height;
+
 	//
 
 	int drawmode;
-	GLuint vertexCountX;
 	GLuint perlin_octaves;
 
 	GLuint bufferObject, normalsBufferObject, indiceBufferObject, textureBuffer, texID;
@@ -48,7 +45,11 @@ public:
 	~Terrain();
 
 	GLfloat* noiseValues;
+	GLuint vertexCountX;
 	GLuint vertexCountZ;
+	GLfloat height_scale;
+	GLfloat width;
+	GLfloat height;
 
 	void Terrain::draw();
 	void Terrain::create();

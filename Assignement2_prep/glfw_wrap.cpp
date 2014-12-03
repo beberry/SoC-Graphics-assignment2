@@ -99,6 +99,7 @@ int Glfw_wrap::eventLoop()
 			// Swap buffers
 			glfwSwapBuffers(window);
 			glfwPollEvents();
+			this->lastRender = currentTime;
 		}
 	}
 

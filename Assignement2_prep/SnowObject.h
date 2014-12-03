@@ -34,6 +34,10 @@ struct SnowFlake
 
 	float cameradistance; // *Squared* distance to the camera. if dead : -1.0f
 
+	// Whether the particle has landed on the terrain. Implemented by Jekabs
+	bool landed = false;
+
+
 	bool operator<(const SnowFlake& that) const {
 		// Sort in reverse order : far particles drawn first.
 		return this->cameradistance > that.cameradistance;
@@ -47,19 +51,27 @@ class SnowObject
 	~SnowObject();
 
 	GLfloat* noiseValues;
+	GLuint terrainVertexCountX;
+	GLuint terrainVertexCountZ;
+	GLfloat terrainWidth;
+	GLfloat terrainHeight;
 
-	void create(GLuint program, GLfloat* noiseValues, GLuint terrainVertexCountZ);
+
+	void SnowObject::create(GLuint program, GLfloat* noiseValues, GLuint terrainVertexCountX, GLuint terrainVertexCountZ, GLfloat terrainWidth, GLfloat terrainHeight);
 	int FindUnusedParticle();
 	void SortParticles();
 	void drawParticles(glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix);
 	void defineUniforms();
+	int SnowObject::findNoiseLocation(GLfloat x, GLfloat z);
 
-	GLuint terrainVertexCountZ;
 	GLuint billboard_vertex_buffer;
 	GLuint particles_position_buffer;
 	GLuint particles_color_buffer;
-	const int MaxParticles = 3000;
-	SnowFlake ParticlesContainer[3000];
+	const int MaxParticles = 10000;
+	SnowFlake ParticlesContainer[10000];
+
+	std::vector<SnowFlake> ParticlesContainer2;
+
 	int LastUsedParticle;
 	GLfloat* g_particule_position_size_data;
 	GLubyte* g_particule_color_data;
@@ -73,4 +85,5 @@ class SnowObject
 	GLuint CameraRight_worldspace_ID;
 	GLuint CameraUp_worldspace_ID;
 	GLuint ViewProjMatrixID;
+
 };

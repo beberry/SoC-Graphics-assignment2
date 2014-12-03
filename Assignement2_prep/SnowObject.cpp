@@ -20,9 +20,12 @@ void SnowObject::SortParticles(){
 }
 
 
-void SnowObject::create(GLuint program, GLfloat* noiseValues, GLuint terrainVertexCountZ)
+void SnowObject::create(GLuint program, GLfloat* noiseValues, GLuint terrainVertexCountX, GLuint terrainVertexCountZ, GLfloat terrainWidth, GLfloat terrainHeight)
 {
+	this->terrainVertexCountX = terrainVertexCountX;
 	this->terrainVertexCountZ = terrainVertexCountZ;
+	this->terrainWidth  = terrainWidth;
+	this->terrainHeight = terrainHeight;
 	this->noiseValues = noiseValues;
 
 	glGenVertexArrays(1, &VertexArrayID);
@@ -33,10 +36,10 @@ void SnowObject::create(GLuint program, GLfloat* noiseValues, GLuint terrainVert
 	// The VBO containing the 4 vertices of the particles.
 	// Thanks to instancing, they will be shared by all particles.
 	static const GLfloat g_vertex_buffer_data[] = {
-		-0.008f, -0.008f, 0.0f,
-		0.008f, -0.008f, 0.0f,
-		-0.008f, 0.01f, 0.0f,
-		0.008f, 0.008f, 0.0f,
+		-0.5f, -0.5f, 0.0f,
+		0.5f, -0.5f, 0.0f,
+		-0.5f, 0.5f, 0.0f,
+		0.5f, 0.5f, 0.0f,
 	};
 
 	g_particule_position_size_data = new GLfloat[MaxParticles * 4];
@@ -87,14 +90,20 @@ void SnowObject::create(GLuint program, GLfloat* noiseValues, GLuint terrainVert
 	/* Define the uniform variables */
 	defineUniforms();
 
-	lastTime = glfwGetTime();
+	lastTime = 0;
 }
 
 
 /* Update the particle animation and draw the particles */
 void SnowObject::drawParticles(glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix)
 {
+
 	double currentTime = glfwGetTime();
+	if (lastTime == 0)
+	{
+		lastTime = currentTime;
+	}
+
 	double delta = currentTime - lastTime;
 	lastTime = currentTime;
 
@@ -108,9 +117,9 @@ void SnowObject::drawParticles(glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix)
 	// Generate 10 new particule each millisecond,
 	// but limit this to 16 ms (60 fps), or if you have 1 long frame (1sec),
 	// newparticles will be huge and the next frame even longer.
-	int newparticles = (int)(delta*10000.0);
-	if (newparticles > (int)(0.016f*10000.0))
-		newparticles = (int)(0.016f*10000.0);
+	int newparticles = (int)(delta*1000.0);
+	if (newparticles > (int)(0.003f*10000.0))
+		newparticles = (int)(0.003f*10000.0);
 
 	for (int i = 0; i<newparticles; i++){
 		int particleIndex = FindUnusedParticle();
@@ -119,26 +128,45 @@ void SnowObject::drawParticles(glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix)
 		{
 			break;
 		}
-
-		ParticlesContainer[particleIndex].life = 20.0f; // This particle will live 5 seconds.
-
-
-
 		
-		ParticlesContainer[particleIndex].pos = glm::vec3(glm::linearRand(-10.0f, 10.0f), glm::linearRand(3.6f, 6.0f), glm::linearRand(-10.0f, 10.0f));
+		// written by me.
+		if (ParticlesContainer[particleIndex].landed == true)
+		{
+			// Beffore incrementing the terrain height check whether this particle has landed already..
 
-		float spread = 4.5f;
-		glm::vec3 maindir = glm::vec3(0.0f, 0.0f, 0.0f);
+
+			int noiseIndex = this->findNoiseLocation(ParticlesContainer[particleIndex].pos.x, ParticlesContainer[particleIndex].pos.z);
+
+			if (noiseIndex >= 0)
+			{
+				this->noiseValues[noiseIndex] -= ParticlesContainer[particleIndex].size;
+			}
+		}
+
+		ParticlesContainer[particleIndex].speed = glm::vec3(0, 0, 0);
+		ParticlesContainer[particleIndex].landed = false;
+		ParticlesContainer[particleIndex].life = glm::linearRand(20.0f, 240.0f); // This particle will live 5 seconds.
+		ParticlesContainer[particleIndex].pos = glm::vec3(glm::linearRand(-1 * this->terrainWidth / 2, this->terrainWidth / 2), glm::linearRand(2.6f, 4.4f), glm::linearRand(-1 * this->terrainHeight / 2, this->terrainHeight / 2));
+
+
+		float spread = 6.5f;
+		glm::vec3 maindir = glm::vec3(0.0f, 100.0f, 0.0f);
 		// Very bad way to generate a random direction; 
 		// See for instance http://stackoverflow.com/questions/5408276/python-uniform-spherical-distribution instead,
 		// combined with some user-controlled parameters (main direction, spread, etc)
 		glm::vec3 randomdir = glm::vec3(
-			(rand() % 2000 - 1000.0f) / 1000.0f,
-			(rand() % 2000 - 1000.0f) / 1000.0f,
-			(rand() % 2000 - 1000.0f) / 1000.0f
+			(rand() % (int)this->terrainWidth - this->terrainWidth / 2) / (this->terrainWidth / 2),
+			0.3f,
+			(rand() % (int)this->terrainHeight - this->terrainHeight / 2) / (this->terrainHeight / 2)
 			);
 
 		ParticlesContainer[particleIndex].speed = maindir + randomdir*spread;
+
+		if (ParticlesContainer[particleIndex].speed.y <= 0)
+		{
+			int kkkz = 0;
+		}
+
 
 		// Very bad way to generate a random color
 		ParticlesContainer[particleIndex].r = rand() % 256;
@@ -146,7 +174,7 @@ void SnowObject::drawParticles(glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix)
 		ParticlesContainer[particleIndex].b = rand() % 256;
 		ParticlesContainer[particleIndex].a = (rand() % 256) / 3;
 
-		ParticlesContainer[particleIndex].size = glm::linearRand(0.5f, 0.51f);
+		ParticlesContainer[particleIndex].size = glm::linearRand(0.005f, 0.01f);
 	}
 
 	// Simulate all particles
@@ -160,17 +188,29 @@ void SnowObject::drawParticles(glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix)
 			// Decrease life
 			p.life -= delta;
 			
-			if (p.pos.y <= 0)
+			GLfloat terrainHeight = -100; // Not the best thing to do.
+			
+			int noiseIndex = this->findNoiseLocation(p.pos.x, p.pos.z);
+
+			if (noiseIndex >= 0)
 			{
-				p.pos.y = 0;
+				terrainHeight = this->noiseValues[noiseIndex];
 			}
-			else
+				
+			if (terrainHeight-0.988 < p.pos.y && p.landed == false)
 			{
+
 				if (p.life > 0.0f){
 
 					// Simulate simple physics : gravity only, no collisions
-					p.speed = glm::vec3(0.0f, -9.81f, 0.0f) * (float)delta*(float)2.0;
+					p.speed = glm::vec3(0.0f, -9.81f, 0.0f) * (float)delta * 0.5f;
 					p.pos += p.speed * (float)delta;
+
+					if (p.pos.y <= 0)
+					{
+						int kkkz = 0;
+
+					}
 					p.cameradistance = glm::length(p.pos - CameraPosition);
 
 					if (p.cameradistance < 1.0)
@@ -198,9 +238,31 @@ void SnowObject::drawParticles(glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix)
 					p.cameradistance = -1.0f;
 				}
 			}
+			else{
+				// The snowflake has touched the terrain, increase the terrain height, so that the 
+				// snowflakes pile up. Implemented by Jekabs.
+				if (p.landed == false)
+				{
+					// Beffore incrementing the terrain height check whether this particle has landed already..
+					p.landed = true;
+					this->noiseValues[noiseIndex] += p.size;
+				}
 
-			ParticlesCount++;
+				// Fill the GPU buffer
+				g_particule_position_size_data[4 * ParticlesCount + 0] = p.pos.x;
+				g_particule_position_size_data[4 * ParticlesCount + 1] = p.pos.y;
+				g_particule_position_size_data[4 * ParticlesCount + 2] = p.pos.z;
+
+				g_particule_position_size_data[4 * ParticlesCount + 3] = p.size;
+
+				g_particule_color_data[4 * ParticlesCount + 0] = p.r;
+				g_particule_color_data[4 * ParticlesCount + 1] = p.g;
+				g_particule_color_data[4 * ParticlesCount + 2] = p.b;
+				g_particule_color_data[4 * ParticlesCount + 3] = p.a;
+			}
 		}
+
+		ParticlesCount++;
 	}
 
 	SortParticles();
@@ -322,4 +384,28 @@ int SnowObject::FindUnusedParticle()
 	}
 
 	return -1; // All particles are taken say none can be re-used
+}
+
+// Function which finds the triangle of the terrain which is above / below
+// at this point.
+int SnowObject::findNoiseLocation(GLfloat x, GLfloat z)
+{
+	// Find the triangle above which this snowflake currently is located. Implemented by me.
+	GLfloat terrainWidthStep = this->terrainWidth / GLfloat(this->terrainVertexCountX);
+	GLfloat terrainHeightStep = this->terrainHeight / GLfloat(this->terrainVertexCountZ);
+
+	int noiseIndexX = (x + 0.5*this->terrainWidth) / terrainWidthStep;
+	int noiseIndexZ = (z + 0.5*this->terrainHeight) / terrainHeightStep;
+
+	int noiseIndex = (noiseIndexX*this->terrainVertexCountZ + noiseIndexZ) * 4 + 3;
+	int noiseArraySize = this->terrainVertexCountX*this->terrainVertexCountZ * 4; // 4 - ocatves for perlin noise
+	
+	if (noiseIndex >= 0 && noiseIndex < noiseArraySize)
+	{
+		return noiseIndex;
+	}
+	else
+	{
+		return -1;
+	}
 }

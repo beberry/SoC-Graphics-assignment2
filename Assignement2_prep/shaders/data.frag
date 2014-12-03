@@ -13,12 +13,13 @@ in VS_OUT
 	float u1, u2;
 } vs_texture;
 
-vec3 global_ambient  = vec3(0.07, 0.07, 0.07);
+vec3 global_ambient  = vec3(0.05, 0.05, 0.05);
 vec3 specular_albedo = vec3(1.0, 0.8, 0.6);
 vec4 fog_colour		 = vec4(0.1, 0.1, 0.1, 1.0);
 
-uniform uint emitmode, textureMode, specularMode, fogMode;
+uniform uint emitmode, textureMode, specularMode, fogMode, terrainMode;
 uniform sampler2D tex1;
+
 
 out vec4 outputColor;
 
@@ -81,13 +82,31 @@ vec4 texturing()
 
 void main()
 {
+	// Colour based on height values.
+	vec3 fragmentColour = vs_out.colour.xyz;
+
+
+
+	if(vs_out.world_coord.y < -0.5 && terrainMode == 1)
+	{
+		fragmentColour = vec3(108.f/255.f, 169.f/255.f, 248.f/255.f);
+	}
+	else if(vs_out.world_coord.y < -0.48 && terrainMode == 1)
+	{
+		fragmentColour = vec3(181.f/255.f, 116.f/255.f, 42.f/255.f);
+	}
+	else if(vs_out.world_coord.y < 2 && terrainMode == 1)
+	{
+		fragmentColour = vec3(87.f/255.f, 149.f/255.f, 64.f/255.f);
+	}
+
 	vec3 emissive = vec3(0);
 
 	// Ambient lighting calculation;
-	vec3 ambient = vs_out.colour.xyz *0.3;
+	vec3 ambient = fragmentColour * 0.3;
 
 	// Diffuse lighting calculation
-	vec3 diffuse = max(dot(vs_out.N, vs_out.L), 0.0) * vs_out.colour.xyz;
+	vec3 diffuse = max(dot(vs_out.N, vs_out.L), 0.0) * fragmentColour;
 
 	// Specular lighting caluclation
 	vec3 V = normalize(-vs_out.P.xyz);	
@@ -109,8 +128,8 @@ void main()
 	if(textureMode == 1)
 	{
 		// If texture mode is enabled, then get the fragment colour from the texture map.
-		vec4 texcolour = texturing();
-		outputColor = vec4(vs_out.attenuation*(texcolour.xyz*(ambient + diffuse+specular))+global_ambient+emissive, 1.0);
+		//vec4 texcolour = texturing();
+		//outputColor = vec4(vs_out.attenuation*(texcolour.xyz*(ambient + diffuse+specular))+global_ambient+emissive, 1.0);
 	}
 
 	if(fogMode == 1)
@@ -124,5 +143,5 @@ void main()
 		outputColor = fog(outputColor);
 	}
 
-	//outputColor = vec4(0.3,0.3,0.0,1.0);
+	//outputColor = vec4(fragmentColour.xyz, 1.0);
 }

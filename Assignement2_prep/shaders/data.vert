@@ -10,7 +10,8 @@ layout(location = 3) in vec3 textcoord;
 uniform mat4 model, view, projection;
 uniform mat3 normalmatrix;
 uniform vec4 lightPos;
-uniform uint emitmode, textureMode, specularMode;
+uniform uint emitmode, textureMode, specularMode, terrainMode;
+
 
 // My out definitions
 out VS_OUT

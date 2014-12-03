@@ -18,7 +18,7 @@ GLuint fogmode;
 GLuint wingCount;
 
 /* Uniforms */
-GLuint modelID, viewID, projectionID, normalMatrixID, lightPosID, emitmodeID, textureID, textureModeID, specularModeID, fogmodeID;
+GLuint modelID, viewID, projectionID, normalMatrixID, lightPosID, terrainModeID, emitmodeID, textureID, textureModeID, specularModeID, fogmodeID;
 
 /* Graphics models */
 Sphere *lightSourceModel;
@@ -134,7 +134,7 @@ void GraphicsManager::init(Glfw_wrap *glfw)
 
 
 	snowModel = new SnowObject();
-	snowModel->create(snowShader, terrain->noiseValues, terrain->vertexCountZ);
+	snowModel->create(snowShader, terrain->noiseValues, terrain->vertexCountX, terrain->vertexCountZ, terrain->width, terrain->height);
 
 	try
 	{
@@ -158,6 +158,7 @@ void GraphicsManager::init(Glfw_wrap *glfw)
 	textureModeID = glGetUniformLocation(program, "textureMode");
 	specularModeID = glGetUniformLocation(program, "specularMode");
 	fogmodeID = glGetUniformLocation(program, "fogMode");
+	terrainModeID = glGetUniformLocation(program, "terrainMode");
 
 	/* Create a windmill object/ */
 	windmill = new Windmill(wingCount, 4.0, 1.0, 0.73, 1.1, modelID, normalMatrixID, textureID, textureModeID, specularModeID);
@@ -243,7 +244,7 @@ void display()
 	glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
 	glUniform4fv(lightPosID, 1, glm::value_ptr(lightPos));
 	glUniform1ui(emitmodeID, emitmode);
-	glUniform1ui(fogmodeID, fogmode);
+	glUniform1ui(terrainModeID, 0);
 	glUniformMatrix3fv(normalMatrixID, 1, GL_FALSE, &gl_NormalMatrix[0][0]);
 
 	/* Draw our Windmill */
@@ -258,9 +259,9 @@ void display()
 	//glDisable(GL_TEXTURE_2D);
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(2);
-
+	glUniform1ui(terrainModeID, 1);
 	terrain->draw();
-
+	glUniform1ui(terrainModeID, 0);
 	glUniform1ui(textureModeID, 0);
 
 

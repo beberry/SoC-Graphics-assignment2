@@ -3,12 +3,12 @@
 
 Terrain::Terrain()
 {
-	this->vertexCountX = 20;
-	this->vertexCountZ = 20;
+	this->vertexCountX = 250;
+	this->vertexCountZ = 250;
 	this->perlin_octaves = 4;
 	this->height_scale = 1.f;
-	this->height = 20.0;
-	this->width = 20.0;
+	this->height = 9.5;
+	this->width = 9.5;
 	this->drawmode = 3;
 }
 
@@ -26,7 +26,7 @@ void Terrain::create()
 	this->vertexNormals.resize(vertexCount);
 
 	/* First calculate the noise array which we'll use for our vertex height values */
-	calculateNoise(1.0f, 1.7f);
+	calculateNoise(1.7f, 2.0f);
 
 	/* Debug code to check that noise values are sensible */
 	/*for (int i = 0; i < (this->vertexCountX*this->vertexCountZ*perlin_octaves); i++)
