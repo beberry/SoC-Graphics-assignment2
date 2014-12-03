@@ -128,8 +128,8 @@ void main()
 	if(textureMode == 1)
 	{
 		// If texture mode is enabled, then get the fragment colour from the texture map.
-		//vec4 texcolour = texturing();
-		//outputColor = vec4(vs_out.attenuation*(texcolour.xyz*(ambient + diffuse+specular))+global_ambient+emissive, 1.0);
+		vec4 texcolour = texturing();
+		outputColor = texcolour;
 	}
 
 	if(fogMode == 1)

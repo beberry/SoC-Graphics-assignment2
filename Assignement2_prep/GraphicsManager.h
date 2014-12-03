@@ -28,6 +28,7 @@ reacts to callbacks.
 #include <iostream>
 #include "glfw_wrap.h"
 #include "shaderManager.h"
+#include "CloudTexture.h"
 
 class GraphicsManager
 {

@@ -25,6 +25,7 @@ Sphere *lightSourceModel;
 Windmill *windmill;
 Terrain *terrain;
 SnowObject *snowModel;
+Cube *skyBox;
 
 /* Other configuration */
 GLfloat light_x, light_y, light_z, vx, vy, vz, wingAngle, wingAngle_inc, head_angle, zoom, aspect_ratio;
@@ -109,6 +110,8 @@ void GraphicsManager::init(Glfw_wrap *glfw)
 	lightSourceModel = new Sphere(0.5, 0.5, false, textureID);
 	lightSourceModel->makeVBO(20.0f, 30.0f);
 
+	
+
 	/* Create shader manager and load the shader programs. */
 
 	ShaderManager *shaderManager = new ShaderManager();
@@ -130,6 +133,13 @@ void GraphicsManager::init(Glfw_wrap *glfw)
 	terrain = new Terrain();
 	terrain->setTexture("water.jpg");
 	terrain->create();
+
+	/* Create the skyBox */
+	skyBox = new Cube();
+	CloudTexture *clTx = new CloudTexture();
+	clTx->create(600,600);
+	skyBox->setTexID(clTx->getTexID());
+
 
 
 
@@ -248,12 +258,33 @@ void display()
 	glUniformMatrix3fv(normalMatrixID, 1, GL_FALSE, &gl_NormalMatrix[0][0]);
 
 	/* Draw our Windmill */
+
+	glm::mat4 tmpModel = model;
+	tmpModel = glm::translate(tmpModel, glm::vec3(-1.0, -0.3, 2.0));
+	tmpModel = glm::scale(tmpModel, glm::vec3(0.15, 0.15, 0.15));
+
+	//modelTranslate.push(glm::translate(modelTranslate.top(), glm::vec3(0, 1, 2)));
 	modelScale.push(glm::scale(modelScale.top(), glm::vec3(0.4, 0.4, 0.4)));
-	//windmill->draw(View, modelTranslate, modelScale, modelRotate);
+	windmill->draw(View, tmpModel, modelTranslate, modelScale, modelRotate);
+	//modelTranslate.pop();
 	modelScale.pop();
 	/* END Windmill */
-	glUniform1ui(specularModeID, 1);
+
+
 	glUniform1ui(textureModeID, 1);
+
+	tmpModel = glm::scale(model, glm::vec3(20, 20, 20));
+	gl_NormalMatrix = glm::transpose(glm::inverse(glm::mat3(View*tmpModel)));
+	glUniformMatrix4fv(modelID, 1, GL_FALSE, &tmpModel[0][0]);
+	glUniformMatrix3fv(normalMatrixID, 1, GL_FALSE, &gl_NormalMatrix[0][0]);
+	skyBox->draw();
+	gl_NormalMatrix = glm::transpose(glm::inverse(glm::mat3(View*model)));
+	glUniformMatrix4fv(modelID, 1, GL_FALSE, &model[0][0]);
+	glUniformMatrix3fv(normalMatrixID, 1, GL_FALSE, &gl_NormalMatrix[0][0]);
+	glUniform1ui(textureModeID, 0);
+
+	glUniform1ui(specularModeID, 1);
+	glUniform1ui(textureModeID, 0);
 	glUniform1ui(emitmodeID, 0);
 	//glBindTexture(GL_TEXTURE_2D, 0);
 	//glDisable(GL_TEXTURE_2D);
@@ -366,6 +397,7 @@ static void keyCallback(GLFWwindow* window, int k, int s, int action, int mods)
 		lightSourceModel->setDrawmode(drawmode);
 		windmill->setDrawmode(drawmode);
 		terrain->setDrawmode(drawmode);
+		skyBox->setDrawmode(drawmode);
 	}
 
 

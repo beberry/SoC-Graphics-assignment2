@@ -38,7 +38,7 @@ private:
 	int drawmode;
 	GLuint perlin_octaves;
 
-	GLuint bufferObject, normalsBufferObject, indiceBufferObject, textureBuffer, texID;
+	GLuint bufferObject, normalsBufferObject, indiceBufferObject, textureBuffer;
 
 public:
 	Terrain();
@@ -46,7 +46,7 @@ public:
 
 	GLfloat* noiseValues;
 	GLuint vertexCountX;
-	GLuint vertexCountZ;
+	GLuint vertexCountZ, texID;
 	GLfloat height_scale;
 	GLfloat width;
 	GLfloat height;

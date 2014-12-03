@@ -26,7 +26,7 @@ void Terrain::create()
 	this->vertexNormals.resize(vertexCount);
 
 	/* First calculate the noise array which we'll use for our vertex height values */
-	calculateNoise(1.7f, 2.0f);
+	calculateNoise(1.85f, 2.0f);
 
 	/* Debug code to check that noise values are sensible */
 	/*for (int i = 0; i < (this->vertexCountX*this->vertexCountZ*perlin_octaves); i++)

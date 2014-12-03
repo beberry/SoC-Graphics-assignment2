@@ -28,7 +28,7 @@ private:
 	std::vector<GLfloat> vertexPositions;
 	std::vector<GLfloat> vertexNormals;
 
-	GLuint bufferObject, normalsBufferObject, elementBuffer;
+	GLuint bufferObject, normalsBufferObject, elementBuffer, textureBuffer, texID;
 
 	int drawmode;
 	GLuint vertexCount;
@@ -40,6 +40,7 @@ private:
 	GLfloat height;
 	GLfloat maxTopRadius;
 	GLfloat radiussCoeff; // used to multiply the bottom radius with this coeff, to get the top radius.
+	std::vector<GLfloat> texCoords;
 
 
 public:
@@ -49,7 +50,7 @@ public:
 
 	std::vector<GLfloat>* Cube::getVertexPositions();
 
-	GLuint Cube::makeVBO();
+	void Cube::makeVBO();
 	void Cube::makeUnitObject(GLuint numlats, GLuint numlongs);
 	void Cube::draw();
 	void Cube::setDrawmode(int drawmode);
@@ -59,5 +60,6 @@ public:
 
 	// Only for this object.
 	void setVertexPositions(std::vector<GLfloat> vertexPositions);
+	void setTexID(GLuint texID);
 };
 

@@ -137,7 +137,7 @@ void Windmill::createWings()
 }
 
 /* Draw the windmill object. */
-void Windmill::draw(glm::mat4 &View, std::stack<glm::mat4> &modelTranslate, std::stack<glm::mat4> &modelScale, std::stack<glm::mat4> &modelRotate)
+void Windmill::draw(glm::mat4 &View, glm::mat4 &Model, std::stack<glm::mat4> &modelTranslate, std::stack<glm::mat4> &modelScale, std::stack<glm::mat4> &modelRotate)
 {
 	glm::mat4 model			  = glm::mat4(1.0f);
 	glm::mat3 gl_NormalMatrix = glm::mat3(1.0f);
@@ -148,7 +148,7 @@ void Windmill::draw(glm::mat4 &View, std::stack<glm::mat4> &modelTranslate, std:
 
 	/* Do some transformations with the roof of the windmill. */
 	modelRotate.push(glm::rotate(modelRotate.top(), this->headAngle, glm::vec3(0, 1, 0)));
-	model = modelTranslate.top() * modelScale.top() * modelRotate.top();
+	model = Model*modelTranslate.top() * modelScale.top() * modelRotate.top();
 	
 	gl_NormalMatrix = glm::transpose(glm::inverse(glm::mat3(View*model)));
 
@@ -166,7 +166,7 @@ void Windmill::draw(glm::mat4 &View, std::stack<glm::mat4> &modelTranslate, std:
 	modelRotate.push(glm::rotate(modelRotate.top(), 90.0f, glm::vec3(1, 0, 0)));
 	modelRotate.push(glm::rotate(modelRotate.top(), this->wingAngle, glm::vec3(0, 1, 0)));
 	modelTranslate.push(glm::translate(modelTranslate.top(), glm::vec3(0, 0.15, this->topMaxWidth/2)));
-	model = fullRotation*modelTranslate.top() * modelScale.top() * modelRotate.top();
+	model = Model*fullRotation*modelTranslate.top() * modelScale.top() * modelRotate.top();
 
 	gl_NormalMatrix = glm::transpose(glm::inverse(glm::mat3(View*model)));
 
@@ -187,7 +187,7 @@ void Windmill::draw(glm::mat4 &View, std::stack<glm::mat4> &modelTranslate, std:
 	modelRotate.push(glm::rotate(modelRotate.top(), 90.0f, glm::vec3(1, 0, 0)));
 	modelRotate.push(glm::rotate(modelRotate.top(), this->wingAngle, glm::vec3(0, 1, 0)));
 	modelTranslate.push(glm::translate(modelTranslate.top(), glm::vec3(0, 0.15, this->topMaxWidth / 2)));
-	model = fullRotation*modelTranslate.top() * modelScale.top() * modelRotate.top();
+	model = Model * fullRotation*modelTranslate.top() * modelScale.top() * modelRotate.top();
 
 	gl_NormalMatrix = glm::transpose(glm::inverse(glm::mat3(View*model)));
 
@@ -206,7 +206,7 @@ void Windmill::draw(glm::mat4 &View, std::stack<glm::mat4> &modelTranslate, std:
 
 
 	/* Do some transformations with the base of the windmill. */
-	model = modelTranslate.top() * modelScale.top() * modelRotate.top();
+	model = Model * modelTranslate.top() * modelScale.top() * modelRotate.top();
 
 	gl_NormalMatrix = glm::transpose(glm::inverse(glm::mat3(View*model)));
 
@@ -223,7 +223,7 @@ void Windmill::draw(glm::mat4 &View, std::stack<glm::mat4> &modelTranslate, std:
 	glm::mat4 move = glm::mat4(1.0f);
 	move = glm::translate(move, glm::vec3(0, -this->baseHeight, 0));
 
-	model = modelTranslate.top() * modelScale.top() * move * modelRotate.top();
+	model = Model * modelTranslate.top() * modelScale.top() * move * modelRotate.top();
 
 	gl_NormalMatrix = glm::transpose(glm::inverse(glm::mat3(View*model)));
 
@@ -289,7 +289,7 @@ void Windmill::draw(glm::mat4 &View, std::stack<glm::mat4> &modelTranslate, std:
 
 		modelTranslate.push(glm::translate(modelTranslate.top(), glm::vec3(xMove, yMove+0.15, 0.46)));
 		modelRotate.push(glm::rotate(modelRotate.top(), currentAngle, glm::vec3(0, 0, 1)));
-		model = fullRotation*modelTranslate.top() * modelScale.top() * modelRotate.top();
+		model = Model * fullRotation*modelTranslate.top() * modelScale.top() * modelRotate.top();
 
 		gl_NormalMatrix = glm::transpose(glm::inverse(glm::mat3(View*model)));
 

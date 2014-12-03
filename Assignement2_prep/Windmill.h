@@ -64,7 +64,7 @@ public:
 	void Windmill::createWingHolder();
 	void Windmill::createWingHolderCap();
 	void Windmill::createWings();
-	void Windmill::draw(glm::mat4 &View, std::stack<glm::mat4> &modelTranslate, std::stack<glm::mat4> &modelScale, std::stack<glm::mat4> &modelRotate);
+	void Windmill::draw(glm::mat4 &View, glm::mat4 &Model, std::stack<glm::mat4> &modelTranslate, std::stack<glm::mat4> &modelScale, std::stack<glm::mat4> &modelRotate);
 	void Windmill::setDrawmode(int drawmode);
 	void Windmill::setWingAngle(GLfloat angle);
 	void Windmill::setHeadAngle(GLfloat angle);

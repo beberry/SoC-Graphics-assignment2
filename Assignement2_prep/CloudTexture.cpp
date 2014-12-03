@@ -1,0 +1,101 @@
+/**
+Class which generates a 2D texture iusing Perlin noise, to
+simulate clouds.
+
+@author Jekabs Stikans
+@version 1.0, 03/12/2014
+*/
+
+#include "CloudTexture.h"
+
+
+CloudTexture::CloudTexture()
+{
+}
+
+
+CloudTexture::~CloudTexture()
+{
+}
+
+void CloudTexture::create(GLuint width, GLuint height)
+{
+	this->width = width;
+	this->height = height;
+
+	this->generateNoise(4, 2.5, 4);
+
+	glActiveTexture(GL_TEXTURE0);
+	glGenTextures(1, &this->texID);
+	glBindTexture(GL_TEXTURE_2D, this->texID);
+	glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, this->width, this->height);
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, this->width, this->height, GL_RGBA, GL_UNSIGNED_BYTE, this->noisValues);
+
+
+	/* Define the texture behaviour parameters */
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+}
+
+// Return the index number of the texture.
+GLuint CloudTexture::getTexID()
+{
+	return this->texID;
+}
+
+// Parts of this method are taken from Ian Martins terrain example.
+void CloudTexture::generateNoise(GLfloat pFrequency, GLfloat pScale, GLuint octaves)
+{
+	this->noisValues = new GLubyte[this->width * this->height * 4];
+
+	GLfloat xfactor = 1.f / (this->width - 1);
+	GLfloat yfactor = 1.f / (this->height - 1);
+
+	for (int row = 0; row < this->height; row++)
+	{
+		for (int col = 0; col < this->width; col++)
+		{
+			GLfloat x = xfactor * col;
+			GLfloat y = yfactor * row;
+			GLfloat sum = 0.0f;
+			GLfloat freq = pFrequency;
+			GLfloat scale = pScale;
+
+			// Sum up the values of all octaves.
+			for (int oct = 0; oct < octaves; oct++)
+			{
+				glm::vec2 p(x*freq, y*freq);
+				GLfloat val = 0.0f;
+
+				val = glm::perlin(p, glm::vec2(freq)) / scale;
+				sum += val;
+
+				// Increase the frequency and scale.
+				freq  *= 2.f;
+				scale *= pScale;
+			}
+
+			GLfloat result = (sum + 1.f) / 2.0f;
+			GLubyte grey_value = (GLubyte)(result * 255.f);
+
+
+			glm::vec3 skyColour = glm::vec3(163.0, 195.0, 247.0);
+			glm::vec3 cloudColour = glm::vec3(0.0, 0.0, 0.0);
+			glm::vec3 colour = result*result*skyColour + 2 * result*(1 - result)*grey_value + (1 - result)*(1 - result)*cloudColour;
+			// Store the noise.
+			this->noisValues[(row * this->width + col) * 4] = colour.r;
+			this->noisValues[(row * this->width + col) * 4 + 1] = colour.g;
+			this->noisValues[(row * this->width + col) * 4 + 2] = colour.b;
+			this->noisValues[(row * this->width + col) * 4 + 3] = 1.0f;
+
+
+
+		}
+	}
+
+}
