@@ -65,8 +65,7 @@ void main()
 	vs_out.attenuation = attenuation;
 	vs_out.world_coord = model*position_h;
 
-		// Colour based on height values.
-
+	// Colour based on height values.
 	if(vs_out.world_coord.y < -0.5 && terrainMode == 1)
 	{
 		vs_out.colour = vec4(108.f/255.f, 169.f/255.f, 248.f/255.f, 0.99);
@@ -79,6 +78,19 @@ void main()
 	{
 		vs_out.colour = vec4(87.f/255.f, 149.f/255.f, 64.f/255.f, 1.0);
 	}
+
+	// Even out the water surface
+	if(vs_out.world_coord.y < -0.5 && terrainMode == 1)
+	{
+		// Calculate the difference from the sea level
+		float diff = -0.5 - vs_out.world_coord.y;
+
+		float newDiff = diff*0.95;
+		vs_out.world_coord.y = vs_out.world_coord.y+newDiff;
+
+
+	}
+
 
 	gl_Position = (projection * view * model) * position_h;
 }

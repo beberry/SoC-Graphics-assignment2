@@ -17,7 +17,7 @@ vec3 global_ambient  = vec3(0.05, 0.05, 0.05);
 vec3 specular_albedo = vec3(1.0, 0.8, 0.6);
 vec4 fog_colour		 = vec4(0.1, 0.1, 0.1, 1.0);
 
-vec4 sky = vec4(0.3, 0.3, 0.9, 1.0);
+vec4 sky = vec4(159/255.0f, 205/255.0f, 237/255.0f, 1.0);
 vec4 cloud = vec4(1.0, 1.0, 1.0, 1.0);
 
 uniform uint emitmode, textureMode, specularMode, fogMode, terrainMode, cloudMode;
@@ -113,16 +113,19 @@ void main()
 
 	if(textureMode == 1)
 	{
-
-		// If texture mode is enabled, then get the fragment colour from the texture map.
-		vec4 texcolour = texturing();
-
-		outputColor = texcolour;
-
-		if(cloudMode == 1)
+		
+		if(terrainMode == 0 || terrainMode == 1 &&  vs_out.world_coord.y >= -0.48)
 		{
-			float noise_intensity = (texcolour[0] + texcolour[1] + texcolour[2] + texcolour[3]) / 4.0;
-			outputColor = mix(sky, cloud, noise_intensity);
+			// If texture mode is enabled, then get the fragment colour from the texture map.
+			vec4 texcolour = texturing();
+
+			outputColor = vec4(vs_out.attenuation*(texcolour.xyz*(ambient + diffuse+specular))+global_ambient+emissive, 1.0);
+
+			if(cloudMode == 1)
+			{
+				float noise_intensity = (texcolour[0] + texcolour[1] + texcolour[2] + texcolour[3]) / 4.0;
+				outputColor = mix(sky, cloud, noise_intensity);
+			}
 		}
 	}
 

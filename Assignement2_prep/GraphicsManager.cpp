@@ -131,7 +131,7 @@ void GraphicsManager::init(Glfw_wrap *glfw)
 
 	/* Create the terrain object. */
 	terrain = new Terrain();
-	terrain->setTexture("water.jpg");
+	terrain->setTexture("grass.jpg");
 	terrain->create();
 
 	/* Create the skyBox */
@@ -256,6 +256,7 @@ void display()
 	glUniform4fv(lightPosID, 1, glm::value_ptr(lightPos));
 	glUniform1ui(emitmodeID, emitmode);
 	glUniform1ui(terrainModeID, 0);
+	glUniform1ui(fogmodeID, fogmode);
 	glUniform1ui(cloudModeID, 0);
 	glUniformMatrix3fv(normalMatrixID, 1, GL_FALSE, &gl_NormalMatrix[0][0]);
 
@@ -290,7 +291,7 @@ void display()
 	glUniform1ui(textureModeID, 0);
 
 	glUniform1ui(specularModeID, 1);
-	glUniform1ui(textureModeID, 0);
+	glUniform1ui(textureModeID, 1);
 	glUniform1ui(emitmodeID, 0);
 	//glBindTexture(GL_TEXTURE_2D, 0);
 	//glDisable(GL_TEXTURE_2D);
