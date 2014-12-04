@@ -1,4 +1,4 @@
-#version 400
+﻿#version 400
 
 in VS_OUT
 {
@@ -17,7 +17,10 @@ vec3 global_ambient  = vec3(0.05, 0.05, 0.05);
 vec3 specular_albedo = vec3(1.0, 0.8, 0.6);
 vec4 fog_colour		 = vec4(0.1, 0.1, 0.1, 1.0);
 
-uniform uint emitmode, textureMode, specularMode, fogMode, terrainMode;
+vec4 sky = vec4(0.3, 0.3, 0.9, 1.0);
+vec4 cloud = vec4(1.0, 1.0, 1.0, 1.0);
+
+uniform uint emitmode, textureMode, specularMode, fogMode, terrainMode, cloudMode;
 uniform sampler2D tex1;
 
 
@@ -95,9 +98,10 @@ void main()
 	vec3 R = reflect(-vs_out.L, vs_out.N);
 	vec3 specular = vec3(0.0, 0.0, 0.0);
 	
-	if(specularMode == 1)
+	// Check whether specular mode is on and whether the fragment does not belong to the terrain & is not above sea level
+	if((specularMode == 1 && terrainMode == 0) || (specularMode == 1 && terrainMode == 1 && vs_out.world_coord.y < -0.5))
 	{
-		specular = pow(max(dot(R, V), 0.0), 8.0) * specular_albedo;
+		specular = pow(max(dot(R, V), 0.0), 5.0) * specular_albedo;
 	}
 
 	if (emitmode == 1) 
@@ -109,9 +113,17 @@ void main()
 
 	if(textureMode == 1)
 	{
+
 		// If texture mode is enabled, then get the fragment colour from the texture map.
 		vec4 texcolour = texturing();
+
 		outputColor = texcolour;
+
+		if(cloudMode == 1)
+		{
+			float noise_intensity = (texcolour[0] + texcolour[1] + texcolour[2] + texcolour[3]) / 4.0;
+			outputColor = mix(sky, cloud, noise_intensity);
+		}
 	}
 
 	if(fogMode == 1)

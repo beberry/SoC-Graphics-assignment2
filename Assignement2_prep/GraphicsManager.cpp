@@ -18,7 +18,7 @@ GLuint fogmode;
 GLuint wingCount;
 
 /* Uniforms */
-GLuint modelID, viewID, projectionID, normalMatrixID, lightPosID, terrainModeID, emitmodeID, textureID, textureModeID, specularModeID, fogmodeID;
+GLuint modelID, viewID, projectionID, normalMatrixID, lightPosID, terrainModeID, emitmodeID, textureID, textureModeID, specularModeID, fogmodeID, cloudModeID;
 
 /* Graphics models */
 Sphere *lightSourceModel;
@@ -169,6 +169,7 @@ void GraphicsManager::init(Glfw_wrap *glfw)
 	specularModeID = glGetUniformLocation(program, "specularMode");
 	fogmodeID = glGetUniformLocation(program, "fogMode");
 	terrainModeID = glGetUniformLocation(program, "terrainMode");
+	cloudModeID = glGetUniformLocation(program, "cloudMode");
 
 	/* Create a windmill object/ */
 	windmill = new Windmill(wingCount, 4.0, 1.0, 0.73, 1.1, modelID, normalMatrixID, textureID, textureModeID, specularModeID);
@@ -255,6 +256,7 @@ void display()
 	glUniform4fv(lightPosID, 1, glm::value_ptr(lightPos));
 	glUniform1ui(emitmodeID, emitmode);
 	glUniform1ui(terrainModeID, 0);
+	glUniform1ui(cloudModeID, 0);
 	glUniformMatrix3fv(normalMatrixID, 1, GL_FALSE, &gl_NormalMatrix[0][0]);
 
 	/* Draw our Windmill */
@@ -277,7 +279,11 @@ void display()
 	gl_NormalMatrix = glm::transpose(glm::inverse(glm::mat3(View*tmpModel)));
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &tmpModel[0][0]);
 	glUniformMatrix3fv(normalMatrixID, 1, GL_FALSE, &gl_NormalMatrix[0][0]);
+
+	glUniform1ui(cloudModeID, 1);
 	skyBox->draw();
+	glUniform1ui(cloudModeID, 0);
+
 	gl_NormalMatrix = glm::transpose(glm::inverse(glm::mat3(View*model)));
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &model[0][0]);
 	glUniformMatrix3fv(normalMatrixID, 1, GL_FALSE, &gl_NormalMatrix[0][0]);

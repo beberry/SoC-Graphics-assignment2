@@ -10,7 +10,7 @@ layout(location = 3) in vec3 textcoord;
 uniform mat4 model, view, projection;
 uniform mat3 normalmatrix;
 uniform vec4 lightPos;
-uniform uint emitmode, textureMode, specularMode, terrainMode;
+uniform uint emitmode, textureMode, specularMode, terrainMode, cloudMode;
 
 
 // My out definitions

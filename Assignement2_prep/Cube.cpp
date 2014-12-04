@@ -16,56 +16,196 @@ Cube::Cube()
 	this->texID = 0;
 
 	/* Define vertices for a cube in 12 triangles (these coordinates were taken from Ian's code examples.) */
+
 	this->vertexPositions =
 	{
-		-0.25f, 0.25f, -0.25f, 
-		-0.25f, -0.25f, -0.25f, 
-		0.25f, -0.25f, -0.25f, 
+		// Back
+		-0.25f, 0.25f, -0.25f,
+		-0.25f, -0.25f, -0.25f,
+		0.25f, -0.25f, -0.25f,
 
-		0.25f, -0.25f, -0.25f, 
-		0.25f, 0.25f, -0.25f, 
-		-0.25f, 0.25f, -0.25f, 
+		0.25f, -0.25f, -0.25f,
+		0.25f, 0.25f, -0.25f,
+		-0.25f, 0.25f, -0.25f,
 
-		0.25f, -0.25f, -0.25f, 
-		0.25f, -0.25f, 0.25f, 
-		0.25f, 0.25f, -0.25f, 
+		// Right Side
+		0.25f, -0.25f, -0.25f,
+		0.25f, -0.25f, 0.25f,
+		0.25f, 0.25f, -0.25f,
 
-		0.25f, -0.25f, 0.25f, 
-		0.25f, 0.25f, 0.25f, 
-		0.25f, 0.25f, -0.25f, 
+		0.25f, -0.25f, 0.25f,
+		0.25f, 0.25f, 0.25f,
+		0.25f, 0.25f, -0.25f,
 
-		0.25f, -0.25f, 0.25f, 
-		-0.25f, -0.25f, 0.25f, 
-		0.25f, 0.25f, 0.25f, 
+		// Front face
+		0.25f, -0.25f, 0.25f,
+		-0.25f, -0.25f, 0.25f,
+		0.25f, 0.25f, 0.25f,
 
-		-0.25f, -0.25f, 0.25f, 
-		-0.25f, 0.25f, 0.25f, 
-		0.25f, 0.25f, 0.25f, 
+		-0.25f, -0.25f, 0.25f,
+		-0.25f, 0.25f, 0.25f,
+		0.25f, 0.25f, 0.25f,
 
-		-0.25f, -0.25f, 0.25f, 
-		-0.25f, -0.25f, -0.25f, 
-		-0.25f, 0.25f, 0.25f, 
+		// Left side
+		-0.25f, -0.25f, 0.25f,
+		-0.25f, -0.25f, -0.25f,
+		-0.25f, 0.25f, 0.25f,
 
-		-0.25f, -0.25f, -0.25f, 
-		-0.25f, 0.25f, -0.25f, 
-		-0.25f, 0.25f, 0.25f, 
+		-0.25f, -0.25f, -0.25f,
+		-0.25f, 0.25f, -0.25f,
+		-0.25f, 0.25f, 0.25f,
 
-		-0.25f, -0.25f, 0.25f, 
-		0.25f, -0.25f, 0.25f, 
-		0.25f, -0.25f, -0.25f, 
+		// bottom
+		-0.25f, -0.25f, 0.25f,
+		0.25f, -0.25f, 0.25f,
+		0.25f, -0.25f, -0.25f,
 
-		0.25f, -0.25f, -0.25f, 
-		-0.25f, -0.25f, -0.25f, 
-		-0.25f, -0.25f, 0.25f, 
+		0.25f, -0.25f, -0.25f,
+		-0.25f, -0.25f, -0.25f,
+		-0.25f, -0.25f, 0.25f,
 
-		-0.25f, 0.25f, -0.25f, 
-		0.25f, 0.25f, -0.25f, 
-		0.25f, 0.25f, 0.25f, 
+		// Top
+		-0.25f, 0.25f, -0.25f,
+		0.25f, 0.25f, -0.25f,
+		0.25f, 0.25f, 0.25f,
 
-		0.25f, 0.25f, 0.25f, 
-		-0.25f, 0.25f, 0.25f, 
+		0.25f, 0.25f, 0.25f,
+		-0.25f, 0.25f, 0.25f,
 		-0.25f, 0.25f, -0.25f
 	};
+
+	/*this->vertexPositions =
+	{
+		// Bottom Vertices
+		glm::vec3(-1.0, -1.0, )
+
+		// Front face
+		glm::vec3(-1.0, -1.0, 1.0),
+		glm::vec3(-1.0, 1.0, 1.0),
+		glm::vec3(1.0, 1.0, 1.0),
+		glm::vec3(1.0, -1.0, 1.0),
+
+		// Right side face
+		glm::vec3(1.0, -1.0, 1.0),
+		glm::vec3(1.0, 1.0, 1.0),
+		glm::vec3(1.0, 1.0, -1.0),
+		glm::vec3(1.0, -1.0, -1.0),
+
+		// Back face
+		glm::vec3(-1.0, -1.0, -1.0),
+		glm::vec3(-1.0, 1.0, -1.0),
+		glm::vec3(1.0, 1.0, -1.0),
+		glm::vec3(1.0, -1.0, -1.0),
+
+		// Left side face
+		glm::vec3(-1.0, -1.0, 1.0),
+		glm::vec3(-1.0, 1.0, 1.0),
+		glm::vec3(-1.0, 1.0, -1.0),
+		glm::vec3(-1.0, -1.0, -1.0),
+
+		// Top face
+		glm::vec3(-1.0, 1.0, 1.0),
+		glm::vec3(-1.0, 1.0, -1.0),
+		glm::vec3(1.0, 1.0, -1.0),
+		glm::vec3(1.0, 1.0, 1.0),
+
+		// Bottom face
+		glm::vec3(-1.0, -1.0, 1.0),
+		glm::vec3(-1.0, -1.0, -1.0),
+		glm::vec3(1.0, -1.0, -1.0),
+		glm::vec3(1.0, -1.0, 1.0),
+
+	};
+	*/
+	// Generate vertex positions
+	/*for (int i = 0; i < 2; i++)
+	{
+		GLfloat yPosition = -1.0f;
+
+		if (i == 1)
+		{
+			yPosition = 1.0f;
+		}
+
+		this->vertexPositions.push_back(glm::vec3(-1.0, yPosition, 1.0));
+		this->vertexPositions.push_back(glm::vec3(1.0, yPosition, 1.0));
+		this->vertexPositions.push_back(glm::vec3(1.0, yPosition, -1.0));
+		this->vertexPositions.push_back(glm::vec3(-1.0, yPosition, -1.0));
+	}
+
+	// Define Bottom surface indices.
+	this->indices.push_back(0);
+	this->indices.push_back(1);
+	this->indices.push_back(2);
+
+	this->indices.push_back(2);
+	this->indices.push_back(3);
+	this->indices.push_back(0);
+
+	// Define Top surface indices
+	this->indices.push_back(4);
+	this->indices.push_back(5);
+	this->indices.push_back(6);
+
+	this->indices.push_back(6);
+	this->indices.push_back(7);
+	this->indices.push_back(4);
+
+
+	// Define Side indices
+	this->indices.push_back(0);
+	this->indices.push_back(1);
+	this->indices.push_back(4);
+
+	this->indices.push_back(4);
+	this->indices.push_back(1);
+	this->indices.push_back(5);
+
+	this->indices.push_back(5);
+	this->indices.push_back(1);
+	this->indices.push_back(2);
+
+	this->indices.push_back(2);
+	this->indices.push_back(6);
+	this->indices.push_back(5);
+
+	this->indices.push_back(2);
+	this->indices.push_back(3);
+	this->indices.push_back(6);
+
+	this->indices.push_back(6);
+	this->indices.push_back(3);
+	this->indices.push_back(7);
+
+	this->indices.push_back(3);
+	this->indices.push_back(0);
+	this->indices.push_back(7);
+
+	this->indices.push_back(0);
+	this->indices.push_back(4);
+	this->indices.push_back(7);
+	*/
+	/*this->indices = 
+	{
+		// First triangle strip - sides.
+
+		// Front Face.
+		0, 1, 2,
+		1, 2, 3,
+
+		// Right side face
+		4, 5, 6,
+		5, 6, 7,
+
+		// Back face
+
+	}*/
+
+	/*this->vertexNormals =
+	{
+
+	}*/
+
 
 	this->vertexNormals = 
 	{
@@ -92,11 +232,6 @@ Cube::~Cube()
 }
 
 
-
-std::vector<GLfloat>* Cube::getVertexPositions()
-{
-	return &this->vertexPositions;
-}
 
 /* A method which allows changing the vetex positions of this object. */
 void Cube::setVertexPositions(std::vector<GLfloat> vertexPositions)
@@ -202,28 +337,31 @@ void Cube::setTexID(GLuint texID)
 	this->texCoords.clear();
 	this->texCoords.resize(12);
 
-	for (int i = 0; i < 12; i++)
+	for (int i = 0; i < 6; i++)
 	{
 
-		if (i % 2 == 0)
+		//if (i % 2 == 1)
 		{
 			this->texCoords.push_back(0.0f);
+			this->texCoords.push_back(1.0f);
+
 			this->texCoords.push_back(0.0f);
+			this->texCoords.push_back(0.0f);
+
+			this->texCoords.push_back(0.0f);
+			this->texCoords.push_back(1.0f);
 		}
-
-		this->texCoords.push_back(2.0f);
-		this->texCoords.push_back(2.0f);
-
-		this->texCoords.push_back(2.0f);
-		this->texCoords.push_back(0.0f);
-
-
-
-
-		if (i%2 == 1)
+		//else
 		{
 			this->texCoords.push_back(0.0f);
-			this->texCoords.push_back(2.0f);
+			this->texCoords.push_back(1.0f);
+
+
+			this->texCoords.push_back(1.0f);
+			this->texCoords.push_back(1.0f);
+
+			this->texCoords.push_back(0.0f);
+			this->texCoords.push_back(1.0f);
 		}
 	}
 

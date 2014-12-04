@@ -83,14 +83,10 @@ void CloudTexture::generateNoise(GLfloat pFrequency, GLfloat pScale, GLuint octa
 			GLfloat result = (sum + 1.f) / 2.0f;
 			GLubyte grey_value = (GLubyte)(result * 255.f);
 
-
-			glm::vec3 skyColour = glm::vec3(163.0, 195.0, 247.0);
-			glm::vec3 cloudColour = glm::vec3(255.0, 255.0, 255.0);
-			glm::vec3 colour = result*result*skyColour + (1 - result)*(1 - result)*cloudColour;
 			// Store the noise.
-			this->noisValues[(row * this->width + col) * 4] = colour.r;
-			this->noisValues[(row * this->width + col) * 4 + 1] = colour.g;
-			this->noisValues[(row * this->width + col) * 4 + 2] = colour.b;
+			this->noisValues[(row * this->width + col) * 4] = grey_value;
+			this->noisValues[(row * this->width + col) * 4 + 1] = 0;
+			this->noisValues[(row * this->width + col) * 4 + 2] = grey_value;
 			this->noisValues[(row * this->width + col) * 4 + 3] = 1.0f;
 
 
