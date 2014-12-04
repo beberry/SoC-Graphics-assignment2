@@ -349,6 +349,11 @@ void SnowObject::drawParticles(glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix)
 	// but faster.
 	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, ParticlesCount);
 
+	// Reset vertex attribute divisors
+
+	glVertexAttribDivisor(1, 0);
+	glVertexAttribDivisor(2, 0);
+
 	glDisable(GL_BLEND);
 }
 

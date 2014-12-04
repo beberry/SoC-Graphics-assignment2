@@ -43,6 +43,7 @@ void main()
 	vec4 diffuse_albedo = vec4(1.0, 1.0, 1.0, 1.0);	// This is the vertex colour, used to handle the colourmode change
 	vec3 light_pos3		= lightPos.xyz;			
 
+
 	// Define our vectors to calculate diffuse and specular lighting
 	mat4 mv_matrix = view * model;				// Calculate the model-view transformation
 	vec4 P = mv_matrix * position_h;			// Modify the vertex position (x, y, z, w) by the model-view transformation
@@ -63,6 +64,21 @@ void main()
 	vs_out.colour	   = diffuse_albedo;
 	vs_out.attenuation = attenuation;
 	vs_out.world_coord = model*position_h;
+
+		// Colour based on height values.
+
+	if(vs_out.world_coord.y < -0.5 && terrainMode == 1)
+	{
+		vs_out.colour = vec4(108.f/255.f, 169.f/255.f, 248.f/255.f, 0.99);
+	}
+	else if(vs_out.world_coord.y < -0.48 && terrainMode == 1)
+	{
+		vs_out.colour = vec4(181.f/255.f, 116.f/255.f, 42.f/255.f, 1.0);
+	}
+	else if(vs_out.world_coord.y < 2 && terrainMode == 1)
+	{
+		vs_out.colour = vec4(87.f/255.f, 149.f/255.f, 64.f/255.f, 1.0);
+	}
 
 	gl_Position = (projection * view * model) * position_h;
 }
