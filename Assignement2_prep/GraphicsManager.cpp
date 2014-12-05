@@ -1,9 +1,9 @@
 /**
-An object which is responsible for managing the whole application - draws the frames,
-reacts to callbacks.
+	An object which is responsible for managing the whole application - draws the frames,
+	reacts to callbacks.
 
-@author Jekabs Stikans
-@version 1.0, 28/10/2014
+	@author Jekabs Stikans
+	@version 2.0, 28/10/2014
 */
 
 #include "GraphicsManager.h"
@@ -46,8 +46,7 @@ GraphicsManager::GraphicsManager()
 	window_h = 500;
 
 	wingCount = 5;
-	fogmode = 0;
-
+	fogmode   = 1;
 
 	Glfw_wrap *glfw = new Glfw_wrap(window_w, window_h, "Assignment 2, JS");
 
@@ -97,21 +96,15 @@ void GraphicsManager::init(Glfw_wrap *glfw)
 	vx = 0;
 	vz = 0.f;
 
-	wingAngle = 0.0f;
+	wingAngle     = 0.0f;
 	wingAngle_inc = 2.0f;
-	head_angle = 0.0f;
+	head_angle    = 0.0f;
 
 	// Generate index (name) for one vertex array object
 	glGenVertexArrays(1, &vao);
 
 	// Create the vertex array object and make it current
 	glBindVertexArray(vao);
-
-	/* Create the light source object. */
-	lightSourceModel = new Sphere(0.5, 0.5, false, textureID);
-	lightSourceModel->makeVBO(20.0f, 30.0f);
-
-	
 
 	/* Create shader manager and load the shader programs. */
 
@@ -129,23 +122,6 @@ void GraphicsManager::init(Glfw_wrap *glfw)
 		std::cin.ignore();
 		exit(0);
 	}
-
-	/* Create the terrain object. */
-	terrain = new Terrain();
-	terrain->setTexture("grass.jpg");
-	terrain->create();
-
-	/* Create the skyBox */
-	skyBox = new Cube();
-	CloudTexture *clTx = new CloudTexture();
-	clTx->create(600,600);
-	skyBox->setTexID(clTx->getTexID());
-
-
-
-
-	snowModel = new SnowObject();
-	snowModel->create(snowShader, terrain->noiseValues, terrain->vertexCountX, terrain->vertexCountZ, terrain->width, terrain->height);
 
 	try
 	{
@@ -175,6 +151,24 @@ void GraphicsManager::init(Glfw_wrap *glfw)
 	/* Create a windmill object/ */
 	windmill = new Windmill(wingCount, 4.0, 1.0, 0.73, 1.1, modelID, normalMatrixID, textureID, textureModeID, specularModeID);
 
+	/* Create the terrain object. */
+	terrain = new Terrain();
+	terrain->setTexture("grass.jpg");
+	terrain->create();
+
+	/* Create the skyBox */
+	skyBox = new Cube();
+	CloudTexture *clTx = new CloudTexture();
+	clTx->create(600, 600);
+	skyBox->setTexID(clTx->getTexID());
+
+	/* Create the light source object. */
+	lightSourceModel = new Sphere(0.5, 0.5, false, textureID);
+	lightSourceModel->makeVBO(20.0f, 30.0f);
+
+	snowModel = new SnowObject();
+	snowModel->create(snowShader, terrain->noiseValues, terrain->vertexCountX, terrain->vertexCountZ, terrain->width, terrain->height);
+
 	/* Create the fern model */
 	// The fern model is not ready yet.
 	//fernModel = new Fern(modelID, 1);
@@ -203,7 +197,6 @@ void display()
 
 	/* Enable depth test. */
 	glEnable(GL_DEPTH_TEST);
-
 
 	/* Use the our loaded shader program. */
 	glUseProgram(program);
@@ -279,10 +272,10 @@ void display()
 	/* END Windmill */
 
 
-	glUniform1ui(textureModeID, 1);
-
+	/* Start SkyBox. */
 	tmpModel = glm::scale(model, glm::vec3(20, 20, 20));
 	gl_NormalMatrix = glm::transpose(glm::inverse(glm::mat3(View*tmpModel)));
+	glUniform1ui(textureModeID, 1);
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &tmpModel[0][0]);
 	glUniformMatrix3fv(normalMatrixID, 1, GL_FALSE, &gl_NormalMatrix[0][0]);
 
@@ -290,16 +283,16 @@ void display()
 	skyBox->draw();
 	glUniform1ui(cloudModeID, 0);
 
+	/* END SkyBox */
+
+	/* Start Terrain */
+
 	gl_NormalMatrix = glm::transpose(glm::inverse(glm::mat3(View*model)));
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &model[0][0]);
 	glUniformMatrix3fv(normalMatrixID, 1, GL_FALSE, &gl_NormalMatrix[0][0]);
-	glUniform1ui(textureModeID, 0);
-
 	glUniform1ui(specularModeID, 1);
 	glUniform1ui(textureModeID, 1);
 	glUniform1ui(emitmodeID, 0);
-	//glBindTexture(GL_TEXTURE_2D, 0);
-	//glDisable(GL_TEXTURE_2D);
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(2);
 	glUniform1ui(terrainModeID, 1);
@@ -307,10 +300,11 @@ void display()
 	glUniform1ui(terrainModeID, 0);
 	glUniform1ui(textureModeID, 0);
 
+	/* END Terrain */
+
 	/* Start Fern Model */
 	//fernModel->draw();
 	/* END Fern Model*/
-
 
 	/* START LIGHT Sphere */
 	modelTranslate.push(glm::translate(modelTranslate.top(), glm::vec3(light_x, light_y, light_z)));
@@ -323,7 +317,7 @@ void display()
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &model[0][0]);
 	glUniformMatrix3fv(normalMatrixID, 1, GL_FALSE, &gl_NormalMatrix[0][0]);
 
-	/* Draw light object */
+	/* Draw light object. */
 	emitmode = 1;
 	glUniform1ui(emitmodeID, emitmode);
 	lightSourceModel->draw();
@@ -335,7 +329,7 @@ void display()
 	glDisableVertexAttribArray(0);
 	glUseProgram(0);
 
-	/* Draw snow */
+	/* Draw snow animation. */
 	snowModel->drawParticles(Projection, View);
 }
 
@@ -364,7 +358,6 @@ static void keyCallback(GLFWwindow* window, int k, int s, int action, int mods)
 	if (k == 'Z') zoom -= 0.07f;
 	if (k == 'X') zoom += 0.07f;
 
-
 	if (zoom < 0.0)
 	{
 		zoom = 0.001;
@@ -381,10 +374,10 @@ static void keyCallback(GLFWwindow* window, int k, int s, int action, int mods)
 
 		switch (fogmode)
 		{
-		case 1: std::cout << "\n\tLinear fog." << std::endl; break;
-		case 2: std::cout << "\n\tFog from the super bible." << std::endl; break;
+			case 1: std::cout << "\n\tLinear fog." << std::endl; break;
+			case 2: std::cout << "\n\tFog from the super bible." << std::endl; break;
 
-		default: std::cout << "\n\tFog disabled." << std::endl; break;
+			default: std::cout << "\n\tFog disabled." << std::endl; break;
 		}
 	}
 
@@ -421,7 +414,6 @@ static void keyCallback(GLFWwindow* window, int k, int s, int action, int mods)
 		terrain->setDrawmode(drawmode);
 		skyBox->setDrawmode(drawmode);
 	}
-
 
 	if (k == '1') light_x -= 0.05f;
 	if (k == '2') light_x += 0.05f;
