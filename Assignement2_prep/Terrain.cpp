@@ -3,8 +3,8 @@
 
 Terrain::Terrain()
 {
-	this->vertexCountX = 250;
-	this->vertexCountZ = 250;
+	this->vertexCountX = 350;
+	this->vertexCountZ = 350;
 	this->perlin_octaves = 4;
 	this->height_scale = 1.f;
 	this->height = 9.5;

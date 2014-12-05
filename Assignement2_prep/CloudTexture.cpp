@@ -23,7 +23,7 @@ void CloudTexture::create(GLuint width, GLuint height)
 	this->width = width;
 	this->height = height;
 
-	this->generateNoise(5, 2.5, 4);
+	this->generateNoise(5, 1.1, 4);
 
 	glActiveTexture(GL_TEXTURE0);
 	glGenTextures(1, &this->texID);
@@ -79,10 +79,9 @@ void CloudTexture::generateNoise(GLfloat pFrequency, GLfloat pScale, GLuint octa
 				freq  *= 2.f;
 				scale *= pScale;
 
-				GLfloat result = (sum + 1.f) / 2.0f;
+				GLfloat result = (val + 1.f) / 2.0f;
 
-				this->noisValues[(row * this->width + col) * 4 + oct] =
-					(GLubyte)(result * 255.f);
+				this->noisValues[(row * this->width + col) * 4 + oct] = (GLubyte)(result * 255.f);
 
 			}
 		}

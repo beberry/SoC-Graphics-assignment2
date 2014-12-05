@@ -335,41 +335,45 @@ void Cube::setDrawmode(int drawmode)
 void Cube::setTexID(GLuint texID)
 {
 	this->texCoords.clear();
-	this->texCoords.resize(12);
 
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 12; i++)
 	{
 
-		//if (i % 2 == 1)
+		if (i % 2 == 0)
 		{
+			this->texCoords.push_back(1.0f);
 			this->texCoords.push_back(0.0f);
+
+			this->texCoords.push_back(1.0f);
 			this->texCoords.push_back(1.0f);
 
 			this->texCoords.push_back(0.0f);
-			this->texCoords.push_back(0.0f);
-
-			this->texCoords.push_back(0.0f);
 			this->texCoords.push_back(1.0f);
+
 		}
-		//else
+		else
 		{
 			this->texCoords.push_back(0.0f);
 			this->texCoords.push_back(1.0f);
 
-
-			this->texCoords.push_back(1.0f);
-			this->texCoords.push_back(1.0f);
-
 			this->texCoords.push_back(0.0f);
+			this->texCoords.push_back(0.0f);
+
 			this->texCoords.push_back(1.0f);
+			this->texCoords.push_back(0.0f);
+
 		}
 	}
 
 	this->texID = texID;
 
+
+	int b = this->texCoords.size();
+	int k = 1;
 	/* Generate the texture coordinate buffer */
-	glGenBuffers(1, &this->textureBuffer);
+	/*glGenBuffers(1, &this->textureBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, this->textureBuffer);
 	glBufferData(GL_ARRAY_BUFFER, 12*6*sizeof(GLfloat), this->texCoords.data(), GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);*/
+	this->makeVBO();
 }

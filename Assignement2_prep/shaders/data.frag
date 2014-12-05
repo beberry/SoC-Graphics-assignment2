@@ -17,7 +17,7 @@ vec3 global_ambient  = vec3(0.05, 0.05, 0.05);
 vec3 specular_albedo = vec3(1.0, 0.8, 0.6);
 vec4 fog_colour		 = vec4(0.1, 0.1, 0.1, 1.0);
 
-vec4 sky = vec4(159/255.0f, 205/255.0f, 237/255.0f, 1.0);
+vec4 sky = vec4(90/255.0f, 166/255.0f, 196/255.0f, 1.0);
 vec4 cloud = vec4(1.0, 1.0, 1.0, 1.0);
 
 uniform uint emitmode, textureMode, specularMode, fogMode, terrainMode, cloudMode;
