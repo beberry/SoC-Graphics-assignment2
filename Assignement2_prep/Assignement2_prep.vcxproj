@@ -83,6 +83,7 @@
     <ClInclude Include="CloudTexture.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Disk.h" />
+    <ClInclude Include="Fern.h" />
     <ClInclude Include="glfw_wrap.h" />
     <ClInclude Include="GraphicsManager.h" />
     <ClInclude Include="main.h" />
@@ -102,6 +103,7 @@
     <ClCompile Include="CloudTexture.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Disk.cpp" />
+    <ClCompile Include="Fern.cpp" />
     <ClCompile Include="glfw_wrap.cpp" />
     <ClCompile Include="GraphicsManager.cpp" />
     <ClCompile Include="main.cpp" />

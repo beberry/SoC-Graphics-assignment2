@@ -87,6 +87,9 @@
     <ClInclude Include="CloudTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Fern.h">
+      <Filter>Header Files\Objects\Primitives</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -132,6 +135,9 @@
       <Filter>Source Files\Objects\Primitives</Filter>
     </ClCompile>
     <ClCompile Include="CloudTexture.cpp">
+      <Filter>Source Files\Objects\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="Fern.cpp">
       <Filter>Source Files\Objects\Primitives</Filter>
     </ClCompile>
   </ItemGroup>

@@ -26,6 +26,7 @@ Windmill *windmill;
 Terrain *terrain;
 SnowObject *snowModel;
 Cube *skyBox;
+Fern *fernModel;
 
 /* Other configuration */
 GLfloat light_x, light_y, light_z, vx, vy, vz, wingAngle, wingAngle_inc, head_angle, zoom, aspect_ratio;
@@ -173,6 +174,10 @@ void GraphicsManager::init(Glfw_wrap *glfw)
 
 	/* Create a windmill object/ */
 	windmill = new Windmill(wingCount, 4.0, 1.0, 0.73, 1.1, modelID, normalMatrixID, textureID, textureModeID, specularModeID);
+
+	/* Create the fern model */
+	// The fern model is not ready yet.
+	//fernModel = new Fern(modelID, 1);
 }
 
 /* The display callback method which redraws the scene. */
@@ -301,6 +306,10 @@ void display()
 	terrain->draw();
 	glUniform1ui(terrainModeID, 0);
 	glUniform1ui(textureModeID, 0);
+
+	/* Start Fern Model */
+	//fernModel->draw();
+	/* END Fern Model*/
 
 
 	/* START LIGHT Sphere */

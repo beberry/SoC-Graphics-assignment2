@@ -29,6 +29,7 @@ reacts to callbacks.
 #include "glfw_wrap.h"
 #include "shaderManager.h"
 #include "CloudTexture.h"
+#include "Fern.h"
 
 class GraphicsManager
 {
