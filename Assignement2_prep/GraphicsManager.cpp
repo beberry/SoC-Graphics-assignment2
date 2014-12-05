@@ -120,7 +120,7 @@ void GraphicsManager::init(Glfw_wrap *glfw)
 	/* Create Snow model */
 	try
 	{
-		snowShader = shaderManager->LoadShader("shaders/particle_object.vert", "shaders/particle_object.frag");
+		snowShader = shaderManager->LoadShader("shaders/particle_object.vert", "shaders/particle_object.frag", "shaders/particle_object_geometry.glsl");
 	}
 	catch (std::exception &e)
 	{
@@ -148,7 +148,7 @@ void GraphicsManager::init(Glfw_wrap *glfw)
 
 	try
 	{
-		program = shaderManager->LoadShader("shaders/data.vert", "shaders/data.frag");
+		program = shaderManager->LoadShader("shaders/data.vert", "shaders/data.frag", NULL);
 	}
 	catch (std::exception &e)
 	{

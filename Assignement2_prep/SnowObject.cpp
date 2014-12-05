@@ -37,9 +37,6 @@ void SnowObject::create(GLuint program, GLfloat* noiseValues, GLuint terrainVert
 	// Thanks to instancing, they will be shared by all particles.
 	static const GLfloat g_vertex_buffer_data[] = {
 		-0.5f, -0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f,
-		-0.5f, 0.5f, 0.0f,
-		0.5f, 0.5f, 0.0f,
 	};
 
 	g_particule_position_size_data = new GLfloat[MaxParticles * 4];
@@ -174,7 +171,7 @@ void SnowObject::drawParticles(glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix)
 		ParticlesContainer[particleIndex].b = rand() % 256;
 		ParticlesContainer[particleIndex].a = (rand() % 256) / 3;
 
-		ParticlesContainer[particleIndex].size = glm::linearRand(0.005f, 0.01f);
+		ParticlesContainer[particleIndex].size = glm::linearRand(0.003f, 0.008f);
 	}
 
 	// Simulate all particles
@@ -347,7 +344,7 @@ void SnowObject::drawParticles(glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix)
 	// This is equivalent to :
 	// for(i in ParticlesCount) : glDrawArrays(GL_TRIANGLE_STRIP, 0, 4), 
 	// but faster.
-	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, ParticlesCount);
+	glDrawArraysInstanced(GL_POINTS, 0, 1, 4*ParticlesCount);
 
 	// Reset vertex attribute divisors
 

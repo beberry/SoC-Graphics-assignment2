@@ -86,13 +86,14 @@ std::string ShaderManager::readFile(const char *filePath)
 	Load vertex and fragment shader and return the compiled program
 	Original code taken from Ian Martnis lab example.
 */
-GLuint ShaderManager::LoadShader(const char *vertex_path, const char *fragment_path)
+GLuint ShaderManager::LoadShader(const char *vertex_path, const char *fragment_path, const char *geometry_path)
 {
-	GLuint vertShader, fragShader;
+	GLuint vertShader, fragShader, geomShader;
 
 	// Read shaders
 	std::string vertShaderStr = readFile(vertex_path);
 	std::string fragShaderStr = readFile(fragment_path);
+
 
 	GLint result = GL_FALSE;
 	int logLength;
@@ -104,6 +105,15 @@ GLuint ShaderManager::LoadShader(const char *vertex_path, const char *fragment_p
 	GLuint program = glCreateProgram();
 	glAttachShader(program, vertShader);
 	glAttachShader(program, fragShader);
+
+	if (geometry_path != NULL)
+	{
+		std::string geomShaderStr = readFile(geometry_path);
+		geomShader = BuildShader(GL_GEOMETRY_SHADER, geomShaderStr);
+	
+		glAttachShader(program, geomShader);
+	}
+
 	glLinkProgram(program);
 
 	glGetProgramiv(program, GL_LINK_STATUS, &result);
@@ -115,6 +125,12 @@ GLuint ShaderManager::LoadShader(const char *vertex_path, const char *fragment_p
 	glDeleteShader(vertShader);
 	glDeleteShader(fragShader);
 
+
+	if (geometry_path != NULL)
+	{
+		glDeleteShader(geomShader);
+	}
+
 	return program;
 }
 
@@ -124,7 +140,7 @@ GLuint ShaderManager::LoadShader(const char *vertex_path, const char *fragment_p
 */
 GLuint ShaderManager::BuildShaderProgram(std::string vertShaderStr, std::string fragShaderStr)
 {
-	GLuint vertShader, fragShader;
+	GLuint vertShader, fragShader, geomShader;
 	GLint result = GL_FALSE;
 
 	try
