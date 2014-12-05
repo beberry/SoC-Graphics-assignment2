@@ -1,10 +1,16 @@
-#include "Terrain.h"
+/**
+A primitive graphics object - terrain..
 
+@author Jekabs Stikans (Some parts have been taken from the example code by Ian Martin)
+@version 1.0, 30/11/2014
+*/
+
+#include "Terrain.h"
 
 Terrain::Terrain()
 {
-	this->vertexCountX = 350;
-	this->vertexCountZ = 350;
+	this->vertexCountX   = 350;
+	this->vertexCountZ   = 350;
 	this->perlin_octaves = 4;
 	this->height_scale = 1.f;
 	this->height = 9.5;
@@ -27,12 +33,6 @@ void Terrain::create()
 
 	/* First calculate the noise array which we'll use for our vertex height values */
 	calculateNoise(1.85f, 2.0f);
-
-	/* Debug code to check that noise values are sensible */
-	/*for (int i = 0; i < (this->vertexCountX*this->vertexCountZ*perlin_octaves); i++)
-	{
-		printf("\n noise[%d] = %f", i, this->noiseValues[i]);
-	}*/
 
 	/* Define starting (x,z) positions and the step changes */
 	GLfloat xpos = -width / 2.f;
@@ -175,13 +175,11 @@ void Terrain::createVBO()
 		}
 	}
 
-
 	/* Generate the texture coordinate buffer */
 	glGenBuffers(1, &this->textureBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, this->textureBuffer);
 	glBufferData(GL_ARRAY_BUFFER, texcoords1.size()*sizeof(GLfloat), texcoords1.data(), GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
 }
 
 /* A method which draws the terrain object using the previously defined vertex buffer. */
@@ -216,9 +214,7 @@ void Terrain::draw()
 	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->indiceBufferObject);
-	//glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
 	
-
 	glPointSize(3.f);
 
 	// Enable this line to show model in wireframe
