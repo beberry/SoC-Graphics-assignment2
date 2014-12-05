@@ -233,17 +233,6 @@ void display()
 
 	/* Individual Objects */
 
-	/* START Windmill */
-	/* THE WORST MISTAKE...
-	Instead of
-
-	glUniform4fv(lightPosID, 1, glm::value_ptr(lightPos));
-
-	I had
-
-	glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
-	*/
-
 	model = modelTranslate.top() * modelScale.top() * modelRotate.top();
 	gl_NormalMatrix = glm::transpose(glm::inverse(glm::mat3(View*model)));
 
@@ -264,13 +253,11 @@ void display()
 	tmpModel = glm::translate(tmpModel, glm::vec3(-1.0, -0.3, 2.0));
 	tmpModel = glm::scale(tmpModel, glm::vec3(0.15, 0.15, 0.15));
 
-	//modelTranslate.push(glm::translate(modelTranslate.top(), glm::vec3(0, 1, 2)));
 	modelScale.push(glm::scale(modelScale.top(), glm::vec3(0.4, 0.4, 0.4)));
 	windmill->draw(View, tmpModel, modelTranslate, modelScale, modelRotate);
-	//modelTranslate.pop();
 	modelScale.pop();
-	/* END Windmill */
 
+	/* END Windmill */
 
 	/* Start SkyBox. */
 	tmpModel = glm::scale(model, glm::vec3(20, 20, 20));
@@ -278,11 +265,10 @@ void display()
 	glUniform1ui(textureModeID, 1);
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &tmpModel[0][0]);
 	glUniformMatrix3fv(normalMatrixID, 1, GL_FALSE, &gl_NormalMatrix[0][0]);
-
 	glUniform1ui(cloudModeID, 1);
+
 	skyBox->draw();
 	glUniform1ui(cloudModeID, 0);
-
 	/* END SkyBox */
 
 	/* Start Terrain */
@@ -296,7 +282,9 @@ void display()
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(2);
 	glUniform1ui(terrainModeID, 1);
+
 	terrain->draw();
+
 	glUniform1ui(terrainModeID, 0);
 	glUniform1ui(textureModeID, 0);
 
