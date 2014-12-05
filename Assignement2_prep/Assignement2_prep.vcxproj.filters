@@ -148,13 +148,13 @@
     <None Include="shaders\data.vert">
       <Filter>Source Files\Shaders</Filter>
     </None>
-    <None Include="shaders\particle_object.frag">
+    <None Include="shaders\snow.frag">
       <Filter>Source Files\Shaders</Filter>
     </None>
-    <None Include="shaders\particle_object.vert">
+    <None Include="shaders\snow.vert">
       <Filter>Source Files\Shaders</Filter>
     </None>
-    <None Include="shaders\particle_object_geometry.glsl">
+    <None Include="shaders\snow_geometry.glsl">
       <Filter>Source Files\Shaders</Filter>
     </None>
   </ItemGroup>
