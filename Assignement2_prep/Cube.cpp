@@ -4,7 +4,7 @@
 	class and new functionality was added.
 
 	@author Ian Martin, Modified by Jekabs Stikanss
-	@version 1.0, 03/11/2014
+	@version 2.0, 02/12/2014
 */
 
 #include "Cube.h"
@@ -341,6 +341,7 @@ void Cube::setTexID(GLuint texID)
 
 		if (i % 2 == 0)
 		{
+			// First triangle.
 			this->texCoords.push_back(1.0f);
 			this->texCoords.push_back(0.0f);
 
@@ -353,6 +354,7 @@ void Cube::setTexID(GLuint texID)
 		}
 		else
 		{
+			// Second triangle.
 			this->texCoords.push_back(0.0f);
 			this->texCoords.push_back(1.0f);
 
@@ -367,13 +369,5 @@ void Cube::setTexID(GLuint texID)
 
 	this->texID = texID;
 
-
-	int b = this->texCoords.size();
-	int k = 1;
-	/* Generate the texture coordinate buffer */
-	/*glGenBuffers(1, &this->textureBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, this->textureBuffer);
-	glBufferData(GL_ARRAY_BUFFER, 12*6*sizeof(GLfloat), this->texCoords.data(), GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);*/
 	this->makeVBO();
 }

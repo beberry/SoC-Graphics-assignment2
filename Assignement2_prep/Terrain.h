@@ -1,7 +1,7 @@
 /**
 	A primitive graphics object - terrain..
 
-	@author Jekabs Stikanss
+	@author Jekabs Stikans (Some parts have been taken from the example code by Ian Martin)
 	@version 1.0, 30/11/2014
 */
 
@@ -29,11 +29,6 @@ private:
 	std::vector<glm::vec3> vertexPositions;
 	std::vector<GLuint> indices;
 	std::vector<glm::vec3> vertexNormals;
-
-
-	/* Should rename this one */
-
-	//
 
 	int drawmode;
 	GLuint perlin_octaves;

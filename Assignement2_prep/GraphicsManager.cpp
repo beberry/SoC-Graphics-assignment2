@@ -46,7 +46,7 @@ GraphicsManager::GraphicsManager()
 	window_h = 500;
 
 	wingCount = 5;
-	fogmode   = 1;
+	fogmode   = 2;
 
 	Glfw_wrap *glfw = new Glfw_wrap(window_w, window_h, "Assignment 2, JS");
 

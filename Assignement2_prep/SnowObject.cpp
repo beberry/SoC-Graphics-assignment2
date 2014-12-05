@@ -7,7 +7,6 @@ SnowObject::SnowObject()
 	LastUsedParticle = 0;
 
 	srand(time(0));
-
 }
 
 
@@ -19,24 +18,23 @@ void SnowObject::SortParticles(){
 	std::sort(&ParticlesContainer[0], &ParticlesContainer[MaxParticles]);
 }
 
-
+// Create the snow animation
 void SnowObject::create(GLuint program, GLfloat* noiseValues, GLuint terrainVertexCountX, GLuint terrainVertexCountZ, GLfloat terrainWidth, GLfloat terrainHeight)
 {
+	// Store some information about the terrain, to know when the particles need to stop.
 	this->terrainVertexCountX = terrainVertexCountX;
 	this->terrainVertexCountZ = terrainVertexCountZ;
-	this->terrainWidth  = terrainWidth;
-	this->terrainHeight = terrainHeight;
-	this->noiseValues = noiseValues;
+	this->terrainWidth		  = terrainWidth;
+	this->terrainHeight		  = terrainHeight;
+	this->noiseValues		  = noiseValues;
+	this->programID           = program;
 
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
-	programID = program;
 	glUseProgram(programID);
 
-	// The VBO containing the 4 vertices of the particles.
-	// Thanks to instancing, they will be shared by all particles.
 	static const GLfloat g_vertex_buffer_data[] = {
-		-0.5f, -0.5f, 0.0f,
+		0.0f, 0.0f, 0.0f,
 	};
 
 	g_particule_position_size_data = new GLfloat[MaxParticles * 4];
@@ -69,19 +67,10 @@ void SnowObject::create(GLuint program, GLfloat* noiseValues, GLuint terrainVert
 	GLuint CameraUp_worldspace_ID = glGetUniformLocation(programID, "CameraUp_worldspace");
 	GLuint ViewProjMatrixID = glGetUniformLocation(programID, "VP");
 
-	/* load an image file directly as a new OpenGL texture */
-	Texture = SOIL_load_OGL_texture("circle.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID,
-		SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
-
-	/* check for an error during the load process */
-	if (Texture == 0)
-	{
-		printf("TexID SOIL loading error: '%s'\n", SOIL_last_result());
-	}
-
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
-	// Accept fragment if it closer to the camera than the former one
+
+	// Accept fragment if it is closer to the camera than the former one
 	glDepthFunc(GL_LESS);
 
 	/* Define the uniform variables */
@@ -94,8 +83,9 @@ void SnowObject::create(GLuint program, GLfloat* noiseValues, GLuint terrainVert
 /* Update the particle animation and draw the particles */
 void SnowObject::drawParticles(glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix)
 {
-
+	/* The timing was not done properly, did wierd things at the launch of the project. Had to fix this. */
 	double currentTime = glfwGetTime();
+
 	if (lastTime == 0)
 	{
 		lastTime = currentTime;
@@ -118,39 +108,40 @@ void SnowObject::drawParticles(glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix)
 	if (newparticles > (int)(0.003f*10000.0))
 		newparticles = (int)(0.003f*10000.0);
 
-	for (int i = 0; i<newparticles; i++){
+	for (int i = 0; i<newparticles; i++)
+	{
+		// Check whether any new particles are available.
 		int particleIndex = FindUnusedParticle();
 
 		if (particleIndex < 0)
 		{
+			// If there are no free particles, don't create new ones.
 			break;
 		}
 		
-		// written by me.
+		// Beffore incrementing the terrain height check whether this particle has landed already..
 		if (ParticlesContainer[particleIndex].landed == true)
 		{
-			// Beffore incrementing the terrain height check whether this particle has landed already..
-
-
 			int noiseIndex = this->findNoiseLocation(ParticlesContainer[particleIndex].pos.x, ParticlesContainer[particleIndex].pos.z);
 
+			// Does such nois index actually exist?
 			if (noiseIndex >= 0)
 			{
+				// Decrease the height of the height map. (A particle has melted)
 				this->noiseValues[noiseIndex] -= ParticlesContainer[particleIndex].size;
 			}
 		}
-
-		ParticlesContainer[particleIndex].speed = glm::vec3(0, 0, 0);
+		
+		// Set some particle variables.
+		ParticlesContainer[particleIndex].speed  = glm::vec3(0, 0, 0);
 		ParticlesContainer[particleIndex].landed = false;
-		ParticlesContainer[particleIndex].life = glm::linearRand(20.0f, 240.0f); // This particle will live 5 seconds.
-		ParticlesContainer[particleIndex].pos = glm::vec3(glm::linearRand(-1 * this->terrainWidth / 2, this->terrainWidth / 2), glm::linearRand(2.6f, 4.4f), glm::linearRand(-1 * this->terrainHeight / 2, this->terrainHeight / 2));
-
+		ParticlesContainer[particleIndex].life   = glm::linearRand(20.0f, 240.0f);
+		ParticlesContainer[particleIndex].pos    = glm::vec3(glm::linearRand(-1 * this->terrainWidth / 2, this->terrainWidth / 2), glm::linearRand(2.6f, 4.4f), glm::linearRand(-1 * this->terrainHeight / 2, this->terrainHeight / 2));
 
 		float spread = 6.5f;
 		glm::vec3 maindir = glm::vec3(0.0f, 100.0f, 0.0f);
-		// Very bad way to generate a random direction; 
-		// See for instance http://stackoverflow.com/questions/5408276/python-uniform-spherical-distribution instead,
-		// combined with some user-controlled parameters (main direction, spread, etc)
+
+		// Generate random direction.
 		glm::vec3 randomdir = glm::vec3(
 			(rand() % (int)this->terrainWidth - this->terrainWidth / 2) / (this->terrainWidth / 2),
 			0.3f,
@@ -159,8 +150,7 @@ void SnowObject::drawParticles(glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix)
 
 		ParticlesContainer[particleIndex].speed = maindir + randomdir*spread;
 
-
-		// Very bad way to generate a random color
+		// Very bad way to generate a random color (not used in my application, just kept for further reference)
 		ParticlesContainer[particleIndex].r = rand() % 256;
 		ParticlesContainer[particleIndex].g = rand() % 256;
 		ParticlesContainer[particleIndex].b = rand() % 256;
@@ -171,46 +161,42 @@ void SnowObject::drawParticles(glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix)
 
 	// Simulate all particles
 	int ParticlesCount = 0;
-	for (int i = 0; i<MaxParticles; i++){
+
+	for (int i = 0; i < MaxParticles; i++){
 
 		SnowFlake& p = ParticlesContainer[i]; // shortcut
 
-		if (p.life > 0.0f){
-
+		if (p.life > 0.0f)
+		{
 			// Decrease life
 			p.life -= delta;
 			
-			GLfloat terrainHeight = -100; // Not the best thing to do.
+			GLfloat terrainHeight = -20; // Not the best thing to do, set the terrain height value, in case a snow particle falls outside the terrain.
 			
 			int noiseIndex = this->findNoiseLocation(p.pos.x, p.pos.z);
 
+			// Does such nois index actually exist?
 			if (noiseIndex >= 0)
 			{
 				terrainHeight = this->noiseValues[noiseIndex];
 			}
-				
+			
+			// If this particle is at the same Y position or below (with some allowed error) than the terrain, then the particle needs to stop.
 			if (terrainHeight-0.975 < p.pos.y && p.landed == false)
 			{
-
-				if (p.life > 0.0f){
-
+				// Is the particle still alive?
+				if (p.life > 0.0f)
+				{
 					// Simulate simple physics : gravity only, no collisions
 					p.speed = glm::vec3(0.0f, -9.81f, 0.0f) * (float)delta * 0.5f;
-					p.pos += p.speed * (float)delta;
+					p.pos  += p.speed * (float)delta;
 
-					if (p.pos.y <= 0)
-					{
-						int kkkz = 0;
-
-					}
 					p.cameradistance = glm::length(p.pos - CameraPosition);
 
 					if (p.cameradistance < 1.0)
 					{
 						p.cameradistance = -1.0f;
 					}
-
-					//ParticlesContainer[i].pos += glm::vec3(0.0f,10.0f, 0.0f) * (float)delta;
 
 					// Fill the GPU buffer
 					g_particule_position_size_data[4 * ParticlesCount + 0] = p.pos.x;
@@ -225,12 +211,14 @@ void SnowObject::drawParticles(glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix)
 					g_particule_color_data[4 * ParticlesCount + 3] = p.a;
 
 				}
-				else{
+				else
+				{
 					// Particles that just died will be put at the end of the buffer in SortParticles();
 					p.cameradistance = -1.0f;
 				}
 			}
-			else{
+			else
+			{
 				// The snowflake has touched the terrain, increase the terrain height, so that the 
 				// snowflakes pile up. Implemented by Jekabs.
 				if (p.landed == false)
@@ -259,11 +247,6 @@ void SnowObject::drawParticles(glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix)
 
 	SortParticles();
 
-	// Update the buffers that OpenGL uses for rendering.
-	// There are much more sophisticated means to stream data from the CPU to the GPU, 
-	// but this is outside the scope of this tutorial.
-	// http://www.opengl.org/wiki/Buffer_Object_Streaming
-
 	glBindBuffer(GL_ARRAY_BUFFER, particles_position_buffer);
 	glBufferData(GL_ARRAY_BUFFER, MaxParticles * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW); // Buffer orphaning, a common way to improve streaming perf. See above link for details.
 	glBufferSubData(GL_ARRAY_BUFFER, 0, ParticlesCount * sizeof(GLfloat) * 4, g_particule_position_size_data);
@@ -279,10 +262,10 @@ void SnowObject::drawParticles(glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix)
 	glUseProgram(programID);
 
 	// Bind our texture in Texture Unit 0
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, Texture);
+	/*glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, Texture);*/
 	// Set our "myTextureSampler" sampler to user Texture Unit 0
-	glUniform1i(TextureID, 0);
+	//glUniform1i(TextureID, 0);
 
 	// Same as the billboards tutorial
 	glUniform3f(CameraRight_worldspace_ID, ViewMatrix[0][0], ViewMatrix[1][0], ViewMatrix[2][0]);
@@ -334,22 +317,17 @@ void SnowObject::drawParticles(glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix)
 	glVertexAttribDivisor(1, 1); // positions : one per quad (its center)                 -> 1
 	glVertexAttribDivisor(2, 1); // color : one per quad                                  -> 1
 
-	// Draw the particules !
-	// This draws many times a small triangle_strip (which looks like a quad).
-	// This is equivalent to :
-	// for(i in ParticlesCount) : glDrawArrays(GL_TRIANGLE_STRIP, 0, 4), 
-	// but faster.
+	// Draw the particules
 	glDrawArraysInstanced(GL_POINTS, 0, 1, 4*ParticlesCount);
 
 	// Reset vertex attribute divisors
-
 	glVertexAttribDivisor(1, 0);
 	glVertexAttribDivisor(2, 0);
 
 	glDisable(GL_BLEND);
 }
 
-
+/* Define the uniforms. */
 void SnowObject::defineUniforms()
 {
 	glBindVertexArray(VertexArrayID);
@@ -363,7 +341,7 @@ void SnowObject::defineUniforms()
 	TextureID = glGetUniformLocation(programID, "myTextureSampler");
 }
 
-
+/* Find unused particles */
 int SnowObject::FindUnusedParticle()
 {
 	for (int i = LastUsedParticle; i<MaxParticles; i++){

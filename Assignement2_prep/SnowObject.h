@@ -1,8 +1,8 @@
 /**
-A primitive graphics object - Snow particle.
+	Snow particle animation class.
 
-@author Jekabs Stikanss
-@version 1.0, 1/12/2014
+	@author Jekabs Stikans  (Some parts have been taken from the example code by Ian Martin)
+	@version 1.0, 1/12/2014
 */
 
 #pragma once
@@ -56,7 +56,6 @@ class SnowObject
 	GLfloat terrainWidth;
 	GLfloat terrainHeight;
 
-
 	void SnowObject::create(GLuint program, GLfloat* noiseValues, GLuint terrainVertexCountX, GLuint terrainVertexCountZ, GLfloat terrainWidth, GLfloat terrainHeight);
 	int FindUnusedParticle();
 	void SortParticles();
@@ -85,5 +84,4 @@ class SnowObject
 	GLuint CameraRight_worldspace_ID;
 	GLuint CameraUp_worldspace_ID;
 	GLuint ViewProjMatrixID;
-
 };

@@ -1,9 +1,9 @@
 /**
-Class which generates a 2D texture iusing Perlin noise, to
-simulate clouds.
+	Class which generates a 2D texture iusing Perlin noise, to
+	simulate clouds.
 
-@author Jekabs Stikans
-@version 1.0, 03/12/2014
+	@author Jekabs Stikans (Some parts have been taken from the example code by Ian Martin)
+	@version 1.0, 03/12/2014
 */
 
 #include "CloudTexture.h"
@@ -18,11 +18,14 @@ CloudTexture::~CloudTexture()
 {
 }
 
+// The method which generates the texture.
 void CloudTexture::create(GLuint width, GLuint height)
 {
+	// Set the width and height of the texture.
 	this->width = width;
 	this->height = height;
 
+	// Generate the noise.
 	this->generateNoise(5, 1.2, 4);
 
 	glActiveTexture(GL_TEXTURE0);
@@ -81,6 +84,7 @@ void CloudTexture::generateNoise(GLfloat pFrequency, GLfloat pScale, GLuint octa
 
 				GLfloat result = (val + 1.f) / 2.0f;
 
+				// Save space and store each ocatve in r, g, b or a fields.
 				this->noisValues[(row * this->width + col) * 4 + oct] = (GLubyte)(result * 255.f);
 
 			}

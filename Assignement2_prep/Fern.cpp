@@ -1,3 +1,4 @@
+// I was trying to modify the fern example, though didn't succeed.
 #include "Fern.h"
 
 Fern::Fern(GLuint modelID, int level)

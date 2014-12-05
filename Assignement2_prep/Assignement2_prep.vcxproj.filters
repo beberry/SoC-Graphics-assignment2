@@ -75,9 +75,6 @@
     <ClInclude Include="Disk.h">
       <Filter>Header Files\Objects\Primitives</Filter>
     </ClInclude>
-    <ClInclude Include="SkyBox.h">
-      <Filter>Header Files\Objects\Models</Filter>
-    </ClInclude>
     <ClInclude Include="Terrain.h">
       <Filter>Header Files\Objects\Primitives</Filter>
     </ClInclude>
@@ -124,9 +121,6 @@
     </ClCompile>
     <ClCompile Include="Disk.cpp">
       <Filter>Source Files\Objects\Primitives</Filter>
-    </ClCompile>
-    <ClCompile Include="SkyBox.cpp">
-      <Filter>Source Files\Objects\Models</Filter>
     </ClCompile>
     <ClCompile Include="Terrain.cpp">
       <Filter>Source Files\Objects\Primitives</Filter>

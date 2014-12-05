@@ -2,7 +2,7 @@
 	Class which generates a 2D texture iusing Perlin noise, to
 	simulate clouds.
 
-	@author Jekabs Stikans
+	@author Jekabs Stikans (Some parts have been taken from the example code by Ian Martin)
 	@version 1.0, 03/12/2014
 */
 #pragma once

@@ -4,7 +4,7 @@
 	class and new functionality was added.
 
 	@author Ian Martin, Modified by Jekabs Stikanss
-	@version 1.0, 03/11/2014
+	@version 2.0, 02/12/2014
 */
 
 #pragma once
