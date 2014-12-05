@@ -97,7 +97,7 @@ void GraphicsManager::init(Glfw_wrap *glfw)
 	vz = 0.f;
 
 	wingAngle = 0.0f;
-	wingAngle_inc = 0.1f;
+	wingAngle_inc = 2.0f;
 	head_angle = 0.0f;
 
 	// Generate index (name) for one vertex array object
@@ -354,6 +354,12 @@ static void keyCallback(GLFWwindow* window, int k, int s, int action, int mods)
 	if (k == 'L') wingAngle_inc -= 0.05f;
 	if (k == 'Z') zoom -= 0.07f;
 	if (k == 'X') zoom += 0.07f;
+
+
+	if (zoom < 0.0)
+	{
+		zoom = 0.001;
+	}
 
 	if (k == 'F' && action != GLFW_PRESS)
 	{

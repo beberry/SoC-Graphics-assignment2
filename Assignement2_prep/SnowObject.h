@@ -67,8 +67,8 @@ class SnowObject
 	GLuint billboard_vertex_buffer;
 	GLuint particles_position_buffer;
 	GLuint particles_color_buffer;
-	const int MaxParticles = 10000;
-	SnowFlake ParticlesContainer[10000];
+	const int MaxParticles = 5500;
+	SnowFlake ParticlesContainer[5500];
 
 	std::vector<SnowFlake> ParticlesContainer2;
 

@@ -159,11 +159,6 @@ void SnowObject::drawParticles(glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix)
 
 		ParticlesContainer[particleIndex].speed = maindir + randomdir*spread;
 
-		if (ParticlesContainer[particleIndex].speed.y <= 0)
-		{
-			int kkkz = 0;
-		}
-
 
 		// Very bad way to generate a random color
 		ParticlesContainer[particleIndex].r = rand() % 256;
@@ -194,7 +189,7 @@ void SnowObject::drawParticles(glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix)
 				terrainHeight = this->noiseValues[noiseIndex];
 			}
 				
-			if (terrainHeight-0.988 < p.pos.y && p.landed == false)
+			if (terrainHeight-0.975 < p.pos.y && p.landed == false)
 			{
 
 				if (p.life > 0.0f){

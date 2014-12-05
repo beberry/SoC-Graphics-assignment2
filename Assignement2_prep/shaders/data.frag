@@ -106,7 +106,7 @@ void main()
 
 	if (emitmode == 1) 
 	{
-		emissive = vec3(1.0, 1.0, 0.8);
+		emissive = vec3(245/255.0f, 226/255.0f, 100/255.0f);
 	}
 
 	outputColor = vec4(vs_out.attenuation*(ambient+diffuse+specular)+global_ambient+emissive, 1.0);
