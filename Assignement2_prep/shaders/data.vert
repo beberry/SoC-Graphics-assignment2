@@ -1,3 +1,7 @@
+// The main fragment shader for the second assignment.
+// Written by Jekabs Stikans
+// Version: 2.0v, 02/12/2014
+
 #version 400
 
 // Define the vertex attributes
@@ -12,20 +16,15 @@ uniform mat3 normalmatrix;
 uniform vec4 lightPos;
 uniform uint emitmode, textureMode, specularMode, terrainMode, cloudMode;
 
-
 // My out definitions
 out VS_OUT
 {
 	vec3 N, L;
 	vec4 colour, diffusecolour, ambientcolour, P, world_coord;
 	float attenuation;
-} vs_out;
-
-out VS_OUT
-{
 	vec2 texcoord;
 	float u1, u2;
-} vs_texture;
+} vs_out;
 
 void main()
 {
@@ -33,10 +32,10 @@ void main()
 	{
 		// Used for texturing without vertex seams.
 		// Taken from http://vcg.isti.cnr.it/~tarini/no-seams/jgt_tarini.pdf 
-		vs_texture.u1 = fract(textcoord.x);
-		vs_texture.u2 = fract(textcoord.x+0.5)-0.5;
+		vs_out.u1 = fract(textcoord.x);
+		vs_out.u2 = fract(textcoord.x+0.5)-0.5;
 
-		vs_texture.texcoord = textcoord.xy;
+		vs_out.texcoord = textcoord.xy;
 	}
 
 	vec4 position_h     = vec4(position, 1.0);		// Convert the (x,y,z) position to homogeneous coords (x,y,z,w)
@@ -87,8 +86,6 @@ void main()
 
 		float newDiff = diff*0.95;
 		vs_out.world_coord.y = vs_out.world_coord.y+newDiff;
-
-
 	}
 
 

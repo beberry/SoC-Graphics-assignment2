@@ -1,23 +1,25 @@
-﻿#version 400
+﻿// The main fragment shader for the second assignment.
+// Written by Jekabs Stikans
+// Version: 2.0v, 02/12/2014
+
+#version 400
 
 in VS_OUT
 {
 	vec3 N, L;
 	vec4 colour, diffusecolour, ambientcolour, P, world_coord;
 	float attenuation;
-} vs_out;
 
-in VS_OUT
-{
 	vec2 texcoord;
 	float u1, u2;
-} vs_texture;
+} vs_out;
+
 
 vec3 global_ambient  = vec3(0.05, 0.05, 0.05);
 vec3 specular_albedo = vec3(1.0, 0.8, 0.6);
 vec4 fog_colour		 = vec4(0.1, 0.1, 0.1, 1.0);
 
-vec4 sky = vec4(90/255.0f, 166/255.0f, 196/255.0f, 1.0);
+vec4 sky   = vec4(90/255.0f, 166/255.0f, 196/255.0f, 1.0);
 vec4 cloud = vec4(1.0, 1.0, 1.0, 1.0);
 
 uniform uint emitmode, textureMode, specularMode, fogMode, terrainMode, cloudMode;
@@ -26,6 +28,7 @@ uniform sampler2D tex1;
 
 out vec4 outputColor;
 
+// Exponential fog function.
 vec4 fog(vec4 c)
 {
 	// Taken from "OpenGL SuperBible Sixth Edition", page 543
@@ -40,6 +43,7 @@ vec4 fog(vec4 c)
 	return c * extinction + fog_colour * (1.0 - inscattering);
 }
 
+// Linear fog function.
 vec4 fog_linear(vec4 c)
 {
 	// This example is taken from one of our lecture slides by Ian Martin.
@@ -59,12 +63,12 @@ vec4 texturing()
 	// Taken from http://vcg.isti.cnr.it/~tarini/no-seams/jgt_tarini.pdf 
 
 	vec2 tmp1, tmp2, tmp3;
-	tmp1.y = vs_texture.texcoord.y;
-	tmp2.y = vs_texture.texcoord.y;
-	tmp3.y = vs_texture.texcoord.y;
+	tmp1.y = vs_out.texcoord.y;
+	tmp2.y = vs_out.texcoord.y;
+	tmp3.y = vs_out.texcoord.y;
 
-	tmp1.x = vs_texture.u1;
-	tmp2.x = vs_texture.u2;
+	tmp1.x = vs_out.u1;
+	tmp2.x = vs_out.u2;
 
 	float a = fwidth(tmp1);
 	float b = fwidth(tmp2);
@@ -78,7 +82,7 @@ vec4 texturing()
 		tmp3.x = tmp2.x;
 	}
 
-	vec4 texcolour = texture(tex1, vs_texture.texcoord);
+	vec4 texcolour = texture(tex1, tmp3);
 	
 	return texcolour;
 }
@@ -113,11 +117,10 @@ void main()
 
 	if(textureMode == 1)
 	{
-		
 		if(terrainMode == 0 || terrainMode == 1 &&  vs_out.world_coord.y >= -0.48)
 		{
 			// If texture mode is enabled, then get the fragment colour from the texture map.
-			vec4 texcolour = texturing();
+			vec4 texcolour = texture(tex1, vs_out.texcoord.xy);
 
 			outputColor = vec4(vs_out.attenuation*(texcolour.xyz*(ambient + diffuse+specular))+global_ambient+emissive, 1.0);
 
@@ -125,8 +128,6 @@ void main()
 			{
 				float noise_intensity = (texcolour[0] + texcolour[1] + texcolour[2] + texcolour[3]) / 4.0;
 				
-
-
 				// If the fragment is on the horizon or below it, should fade out the clouds.
 				noise_intensity = smoothstep(0.50+clamp((-0.6)*(vs_out.world_coord.y-0.8), -0.5, 0.3), 1.0, noise_intensity);
 
@@ -145,6 +146,4 @@ void main()
 		// Apply exponential Fog from the super bible
 		outputColor = fog(outputColor);
 	}
-
-	//outputColor = vec4(fragmentColour.xyz, 1.0);
 }
