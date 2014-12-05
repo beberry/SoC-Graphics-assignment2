@@ -23,7 +23,7 @@ void CloudTexture::create(GLuint width, GLuint height)
 	this->width = width;
 	this->height = height;
 
-	this->generateNoise(5, 1.1, 4);
+	this->generateNoise(5, 1.2, 4);
 
 	glActiveTexture(GL_TEXTURE0);
 	glGenTextures(1, &this->texID);

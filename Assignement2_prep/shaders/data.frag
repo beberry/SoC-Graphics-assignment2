@@ -124,6 +124,12 @@ void main()
 			if(cloudMode == 1)
 			{
 				float noise_intensity = (texcolour[0] + texcolour[1] + texcolour[2] + texcolour[3]) / 4.0;
+				
+
+
+				// If the fragment is on the horizon or below it, should fade out the clouds.
+				noise_intensity = smoothstep(0.50+clamp((-0.6)*(vs_out.world_coord.y-0.8), -0.5, 0.3), 1.0, noise_intensity);
+
 				outputColor = mix(sky, cloud, noise_intensity);
 			}
 		}

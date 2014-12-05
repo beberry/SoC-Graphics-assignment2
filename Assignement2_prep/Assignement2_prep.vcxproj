@@ -118,6 +118,9 @@
   <ItemGroup>
     <None Include="shaders\data.frag" />
     <None Include="shaders\data.vert" />
+    <None Include="shaders\particle_object.frag" />
+    <None Include="shaders\particle_object.vert" />
+    <None Include="shaders\particle_object_geometry.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="textures\index.jpg" />

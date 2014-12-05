@@ -142,6 +142,15 @@
     <None Include="shaders\data.vert">
       <Filter>Source Files\Shaders</Filter>
     </None>
+    <None Include="shaders\particle_object.frag">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="shaders\particle_object.vert">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="shaders\particle_object_geometry.glsl">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="textures\index.jpg">
